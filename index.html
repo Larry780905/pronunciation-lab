@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Pronunciation Lab">
+<meta name="format-detection" content="telephone=no">
+<meta name="color-scheme" content="light dark">
+<title>American English Pronunciation Lab · Mobile</title>
+<style>
+:root{
+  --bg:#f5f7fb;--panel:#ffffff;--panel2:#fbfcff;--ink:#172033;--muted:#667085;
+  --line:#dfe4ec;--accent:#3157ff;--accent2:#e9edff;--ok:#137a48;--bad:#b42318;
+  --warn:#9a6700;--shadow:0 12px 34px rgba(29,44,84,.08);--radius:17px;
+}
+body.dark{
+  --bg:#0f1420;--panel:#171e2b;--panel2:#1b2433;--ink:#edf2f7;--muted:#9ca9ba;
+  --line:#2b3648;--accent:#8ea4ff;--accent2:#202a48;--ok:#6ad29a;--bad:#ff8b83;
+  --warn:#ffd166;--shadow:0 12px 34px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI","Noto Sans TC",Arial,sans-serif;line-height:1.62}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+header{background:#111827;color:#fff;padding:24px 20px 20px}
+.header-row{max-width:1240px;margin:auto;display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+h1{margin:0 0 6px;font-size:clamp(27px,4vw,43px);line-height:1.08}
+h2{margin:0 0 10px;font-size:1.55rem}
+h3{margin:20px 0 8px}
+.sub{color:#cbd5e1}
+.shell{max-width:1240px;margin:auto;display:grid;grid-template-columns:300px 1fr;gap:20px;padding:20px}
+.sidebar{position:sticky;top:12px;height:max-content;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);max-height:calc(100vh - 24px);overflow:auto}
+.sidebar button{width:100%;border:0;background:transparent;color:var(--ink);text-align:left;padding:9px 10px;border-radius:10px}
+.sidebar button:hover,.sidebar button.active{background:var(--accent2);color:var(--accent)}
+.sidebar .section-title{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:14px 8px 5px;font-weight:800}
+.progress{height:9px;background:var(--line);border-radius:999px;overflow:hidden;margin:7px 0 10px}
+.progress>div{height:100%;background:var(--accent);width:0}
+.view{display:none}.view.active{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:21px;box-shadow:var(--shadow);margin-bottom:17px}
+.card.soft{background:var(--panel2);box-shadow:none}
+.badge{display:inline-flex;padding:4px 9px;border-radius:999px;background:var(--accent2);color:var(--accent);font-size:.82rem;font-weight:800;margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.kpi{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px}
+.kpi .num{font-size:1.55rem;font-weight:900}
+.small{font-size:.92rem;color:var(--muted)}
+.tiny{font-size:.82rem;color:var(--muted)}
+.ipa{font-family:"Times New Roman",serif;font-size:1.28rem;font-weight:800}
+.bigipa{font-family:"Times New Roman",serif;font-size:2.2rem;font-weight:800}
+button.primary,button.secondary,button.danger,button.speak,button.icon{
+  border:0;border-radius:10px;padding:9px 13px;font-weight:750
+}
+button.primary{background:var(--accent);color:white}
+button.secondary,button.speak,button.icon{background:var(--accent2);color:var(--ink)}
+button.danger{background:#ffe5e2;color:#a1271f}
+button:disabled{opacity:.5;cursor:not-allowed}
+.choice{display:block;width:100%;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:10px;padding:10px 12px;margin:7px 0;text-align:left}
+.choice:hover{border-color:var(--accent)}
+.feedback{font-weight:800;margin-top:8px}
+.ok{color:var(--ok)}.bad{color:var(--bad)}.warn{color:var(--warn)}
+.tip,.note,.info{padding:12px 14px;border-radius:9px;margin:12px 0}
+.tip{background:rgba(29,145,90,.09);border-left:4px solid var(--ok)}
+.note{background:rgba(210,154,0,.11);border-left:4px solid #d29a00}
+.info{background:rgba(49,87,255,.08);border-left:4px solid var(--accent)}
+.sound-card{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px}
+.sound-card h4{margin:0 0 6px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:9px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+input[type=text],input[type=number],select,textarea{
+  width:100%;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:9px 10px
+}
+input[type=range]{width:170px}
+textarea{min-height:95px;resize:vertical}
+.quizbox{border:1px solid var(--line);border-radius:14px;padding:15px;margin-top:12px;background:var(--panel2)}
+.chips{display:flex;gap:7px;flex-wrap:wrap}
+.chip{padding:6px 9px;border-radius:999px;background:var(--accent2);font-size:.85rem}
+.weak-chip{padding:6px 9px;border-radius:999px;background:#fff0ee;color:#9d281f;border:1px solid #ffd0ca;font-size:.85rem}
+.bar{height:8px;background:var(--line);border-radius:999px;overflow:hidden}.bar>div{height:100%;background:var(--accent)}
+.footer-actions{display:flex;justify-content:space-between;gap:10px;margin-top:16px}
+details{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--panel2);margin:8px 0}
+summary{cursor:pointer;font-weight:800}
+.phoneme-card{border:1px solid var(--line);border-radius:14px;padding:12px;background:var(--panel2);cursor:pointer}
+.phoneme-card:hover{border-color:var(--accent)}
+.phoneme-card.selected{outline:2px solid var(--accent)}
+.practice-word{font-size:1.6rem;font-weight:900}
+.timer{font-variant-numeric:tabular-nums;font-size:1.5rem;font-weight:900}
+.stat-table td:nth-child(n+2),.stat-table th:nth-child(n+2){text-align:right}
+hr{border:0;border-top:1px solid var(--line);margin:14px 0}
+a.linkbtn{display:inline-block;text-decoration:none;background:var(--accent2);color:var(--ink);padding:8px 11px;border-radius:10px;font-weight:750}
+kbd{background:var(--panel2);border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;padding:1px 6px;font-size:.85em}
+canvas{max-width:100%}
+
+.example-set{border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--panel2);margin:10px 0}
+.example-set h4{margin:0 0 8px}
+.example-list{display:flex;gap:7px;flex-wrap:wrap}
+.example-btn{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:6px 10px;cursor:pointer}
+.example-btn:hover{border-color:var(--accent);color:var(--accent)}
+.unit-quiz{border-top:2px solid var(--line);margin-top:22px;padding-top:18px}
+.unit-q{border:1px solid var(--line);border-radius:13px;padding:13px;margin:10px 0;background:var(--panel2)}
+.unit-q .choice.answered{opacity:.75}
+.quiz-progress{font-weight:800;margin:8px 0}
+.quiz-summary{padding:14px;border-radius:12px;background:var(--accent2);margin-top:12px}
+
+
+.alphabet-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-top:12px}
+.letter-card{border:1px solid var(--line);border-radius:14px;padding:12px;background:var(--panel2);text-align:center}
+.letter-card .letter{font-size:1.8rem;font-weight:900}
+.letter-card .letter-ipa{font-family:"Times New Roman",serif;font-size:1.15rem;font-weight:800;margin:2px 0 7px}
+.ipa-reference-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;margin-top:10px}
+.ipa-ref-card{border:1px solid var(--line);border-radius:13px;padding:11px;background:var(--panel2)}
+.ipa-ref-card .symbol{font-family:"Times New Roman",serif;font-size:1.55rem;font-weight:900}
+.ref-legend{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+
+/* ---------- iPhone / iPad UI ---------- */
+:root{
+  --ui-scale:1;
+  --tap:44px;
+}
+html{
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+body{
+  font-size:calc(16px * var(--ui-scale));
+  padding-left:env(safe-area-inset-left);
+  padding-right:env(safe-area-inset-right);
+  overscroll-behavior-y:none;
+}
+button,select,input,textarea,a{
+  touch-action:manipulation;
+}
+button,.choice,a.linkbtn,.sidebar button{
+  min-height:var(--tap);
+}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+  outline:3px solid color-mix(in srgb,var(--accent) 45%,transparent);
+  outline-offset:2px;
+}
+body.ui-large{--ui-scale:1.10}
+body.ui-xlarge{--ui-scale:1.20}
+body.ui-small{--ui-scale:.93}
+body.ui-compact .card{padding:15px;margin-bottom:11px}
+body.ui-compact .sound-card,
+body.ui-compact .example-set,
+body.ui-compact .quizbox,
+body.ui-compact .unit-q{padding:10px}
+body.ui-compact .grid2,
+body.ui-compact .grid3,
+body.ui-compact .grid4{gap:8px}
+.mobile-menu-btn{display:none}
+.sidebar-backdrop{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.42);z-index:89;
+  -webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)
+}
+.mobile-bottom-nav{
+  display:none;position:fixed;left:0;right:0;bottom:0;z-index:88;
+  grid-template-columns:repeat(5,1fr);gap:2px;
+  background:color-mix(in srgb,var(--panel) 94%,transparent);
+  border-top:1px solid var(--line);
+  padding:6px max(7px,env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) max(7px,env(safe-area-inset-left));
+  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+  box-shadow:0 -6px 24px rgba(0,0,0,.08)
+}
+.mobile-bottom-nav button{
+  border:0;background:transparent;color:var(--muted);min-height:50px;border-radius:11px;
+  padding:4px 2px;font-size:.74rem;font-weight:750;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:1px
+}
+.mobile-bottom-nav button .nav-icon{font-size:1.18rem;line-height:1}
+.mobile-bottom-nav button.active{color:var(--accent);background:var(--accent2)}
+.ios-help{
+  border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--panel2)
+}
+.compat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.compat-item{border:1px solid var(--line);border-radius:11px;padding:10px;background:var(--panel)}
+.compat-ok{color:var(--ok);font-weight:800}
+.compat-warn{color:var(--warn);font-weight:800}
+.scroll-hint{display:none}
+
+@media(max-width:980px){.alphabet-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.ipa-reference-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:700px){.alphabet-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ipa-reference-grid,.ref-legend{grid-template-columns:1fr}}
+
+@media(max-width:980px){
+  header{padding-top:calc(15px + env(safe-area-inset-top));padding-left:14px;padding-right:14px;padding-bottom:13px}
+  .header-row{align-items:center}
+  .header-row h1{font-size:clamp(23px,5.5vw,34px)}
+  .header-row .sub{font-size:.85rem}
+  .mobile-menu-btn{display:inline-flex}
+  .shell{display:block;padding:14px 14px calc(88px + env(safe-area-inset-bottom))}
+  .sidebar{
+    position:fixed;left:max(8px,env(safe-area-inset-left));top:max(8px,env(safe-area-inset-top));
+    bottom:max(8px,env(safe-area-inset-bottom));width:min(86vw,360px);height:auto;max-height:none;
+    z-index:90;transform:translateX(calc(-100% - 24px));transition:transform .22s ease;
+    border-radius:18px;overflow:auto;-webkit-overflow-scrolling:touch
+  }
+  body.sidebar-open .sidebar{transform:translateX(0)}
+  body.sidebar-open .sidebar-backdrop{display:block}
+  .mobile-bottom-nav{display:grid}
+  body.no-bottom-nav .mobile-bottom-nav{display:none}
+  body.no-bottom-nav .shell{padding-bottom:18px}
+  .grid4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .card{scroll-margin-top:12px}
+  table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+  .scroll-hint{display:block;color:var(--muted);font-size:.78rem;margin:4px 0}
+}
+@media(max-width:700px){
+  .header-row{display:flex;gap:8px}
+  .header-row>div:first-child{min-width:0;flex:1}
+  .header-row h1{font-size:22px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .header-row .sub{display:none}
+  .header-actions{margin:0;gap:6px}
+  #quickSpeakBtn{display:none}
+  #themeBtn{padding:8px 10px;font-size:0;min-width:44px}
+  #themeBtn::first-letter{font-size:18px}
+  .grid2,.grid3{grid-template-columns:1fr}
+  .grid4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .shell{padding-left:10px;padding-right:10px}
+  .card{padding:15px;border-radius:14px}
+  .alphabet-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .ipa-reference-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+  .ref-legend{grid-template-columns:1fr}
+  .letter-card{padding:10px 7px}
+  .ipa-ref-card{padding:9px}
+  .example-list{gap:6px}
+  .example-btn{min-height:42px;padding:7px 10px}
+  .footer-actions{position:sticky;bottom:calc(64px + env(safe-area-inset-bottom));z-index:15;
+    background:color-mix(in srgb,var(--panel) 94%,transparent);padding:8px 0 2px;
+    -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+  .choice{padding:12px;min-height:48px}
+  .row>button.primary,.row>button.secondary,.row>button.speak{min-height:44px}
+  .compat-grid{grid-template-columns:1fr}
+}
+@media(min-width:701px) and (max-width:980px){
+  .alphabet-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .ipa-reference-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(orientation:landscape) and (max-height:520px) and (max-width:980px){
+  header{padding-top:8px;padding-bottom:8px}
+  .shell{padding-top:8px}
+  .mobile-bottom-nav button{min-height:42px}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-row">
+    <div>
+      <h1>American English Pronunciation Lab</h1>
+      <div class="sub">2 小時核心課程 + 自適應聽辨 + 錄音 + Speech Recognition + Spaced Review</div>
+    </div>
+    <div class="header-actions row">
+      <button class="secondary mobile-menu-btn" id="mobileMenuBtn" aria-label="開啟課程選單">☰</button>
+      <button class="secondary" id="themeBtn">◐ 深色模式</button>
+      <button class="secondary" id="quickSpeakBtn">🔊 測試美式語音</button>
+    </div>
+  </div>
+</header>
+
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+<div class="shell">
+<aside class="sidebar">
+  <strong>核心課程進度 <span id="progressText">0%</span></strong>
+  <div class="progress"><div id="progressBar"></div></div>
+  <div class="tiny">資料只儲存在你的瀏覽器 localStorage。</div>
+
+  <div class="section-title">首頁</div>
+  <button data-view="pre0">★ Start Here · A–Z + IPA</button>
+  <button data-view="dashboard">⌂ Dashboard</button>
+  <button data-view="daily">⏱ 每日 10 分鐘</button>
+
+  <div class="section-title">2 小時核心課程</div>
+  <button data-view="l1">1. 聲音系統 · 8m</button>
+  <button data-view="l2">2. 子音系統 · 12m</button>
+  <button data-view="l3">3. 母音地圖 · 20m</button>
+  <button data-view="l4">4. Connected Speech · 15m</button>
+  <button data-view="l5">5. Listening Lab · 15m</button>
+  <button data-view="l6">6. 拼字解碼 · 15m</button>
+  <button data-view="l7">7. Stress & Suffix · 10m</button>
+  <button data-view="l8">8. Shadowing & Recording · 10m</button>
+  <button data-view="l9">9. Recognition Lab · 10m</button>
+  <button data-view="l10">10. Final Check · 5m</button>
+
+  <div class="section-title">練習工具</div>
+  <button data-view="ipaLab">◎ IPA Lab</button>
+  <button data-view="listenLab">🎧 Adaptive Listening</button>
+  <button data-view="recordLab">● Recording Studio</button>
+  <button data-view="asrLab">🎙 Recognition Lab</button>
+  <button data-view="customLab">✎ 自訂單字 / 句子</button>
+  <button data-view="reviewLab">↻ Spaced Review</button>
+
+  <div class="section-title">分析與資料</div>
+  <button data-view="report">▥ 弱項與學習報告</button>
+  <button data-view="settings">⚙ 設定 / 匯出</button>
+</aside>
+
+<main>
+<section id="pre0" class="view">
+  <div class="card">
+    <span class="badge">Start Here · Reference</span>
+    <h2>26 個英文字母名稱 IPA + General American IPA 音標總表</h2>
+    <div class="note"><strong>先分清楚兩件事：</strong>「字母名稱」和「字母在單字裡代表的聲音」不是同一件事。例：A 的字母名稱是 <span class="ipa">/eɪ/</span>，但 <em>cat</em> 的 a 是 <span class="ipa">/æ/</span>，<em>about</em> 的 a 常是 <span class="ipa">/ə/</span>。</div>
+
+    <h3>A–Z：字母名稱、IPA、常見字母音</h3>
+    <p class="small">按「🔊 字母」聽美式字母名稱；「常見字音」只是典型例子，不代表該字母永遠只有那個音。</p>
+    <div class="row"><button class="primary" id="playAlphabetAll">🔊 播放 A–Z</button><button class="secondary" id="playAlphabetSlow">🐢 慢速播放 A–Z</button></div>
+    <div id="alphabetGrid" class="alphabet-grid"></div>
+
+    <h3>General American 常用 IPA 符號</h3>
+    <p class="small">孤立 IPA 符號本身不適合直接交給一般 TTS 播放，所以每個符號用一個經典代表字示範其聲音。</p>
+    <div class="row">
+      <button class="secondary ipaRefFilter" data-type="all">全部</button>
+      <button class="secondary ipaRefFilter" data-type="consonant">子音</button>
+      <button class="secondary ipaRefFilter" data-type="vowel">母音 / 雙母音</button>
+    </div>
+    <div id="ipaReferenceGrid" class="ipa-reference-grid"></div>
+
+    <h3>IPA 記號怎麼看</h3>
+    <div class="ref-legend">
+      <div class="sound-card"><strong class="ipa">/ /</strong><p class="small">音位（phoneme）層級，例如 /t/。</p></div>
+      <div class="sound-card"><strong class="ipa">[ ]</strong><p class="small">實際語音（phonetic realization），例如美式 flap [ɾ]。</p></div>
+      <div class="sound-card"><strong class="ipa">ˈ</strong><p class="small">主要重音，放在重讀音節前，例如 /əˈbaʊt/。</p></div>
+      <div class="sound-card"><strong class="ipa">ˌ</strong><p class="small">次重音（secondary stress）。</p></div>
+      <div class="sound-card"><strong class="ipa">.</strong><p class="small">有些標音系統用來顯示音節界線。</p></div>
+      <div class="sound-card"><strong>[ɾ]</strong><p class="small">General American 常見 alveolar flap；如 water、better。</p><button class="speak" data-say="water better">🔊</button></div>
+    </div>
+
+    <div class="unit-quiz">
+      <h3>Start Here 自我檢查 · 10 題</h3>
+      <div class="quiz-progress" id="preQuizProgress">尚未作答</div>
+      <div id="preQuizQuestions"></div>
+      <div id="preQuizSummary"></div>
+      <button class="secondary" id="preQuizRetake" style="margin-top:10px">重新測驗</button>
+    </div>
+    <div class="footer-actions"><span></span><button class="primary" id="preToLesson1">完成基礎速查 → Lesson 1</button></div>
+  </div>
+</section>
+
+<section id="dashboard" class="view active">
+  <div class="card">
+    <span class="badge">Dashboard</span>
+    <h2>你的 Pronunciation Control Center</h2>
+    <div class="grid4">
+      <div class="kpi"><div class="small">核心課程</div><div class="num" id="dashProgress">0%</div></div>
+      <div class="kpi"><div class="small">聽辨正確率</div><div class="num" id="dashListening">—</div></div>
+      <div class="kpi"><div class="small">Recognition 成功率</div><div class="num" id="dashASR">—</div></div>
+      <div class="kpi"><div class="small">目前弱項</div><div class="num" id="dashWeak">0</div></div>
+    </div>
+    <div class="info"><strong>推薦順序：</strong>第一次使用先看「A–Z + IPA 基礎速查」，再完成 2 小時核心課程；之後每天做 10 分鐘模式。所有答錯項目會提高之後出題權重。</div>
+    <div class="row">
+      <button class="primary" data-jump="pre0">先看 A–Z + IPA 基礎速查</button>
+      <button class="secondary" data-jump="l1">直接開始 2 小時核心課程</button>
+      <button class="secondary" data-jump="daily">開始今日 10 分鐘</button>
+      <button class="secondary" data-jump="report">查看弱項</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3>今天的優先項目</h3>
+    <div id="priorityBox" class="chips"></div>
+  </div>
+  <div class="card">
+    <h3>訓練原則</h3>
+    <div class="grid3">
+      <div class="sound-card"><strong>1. Hear</strong><p class="small">先建立辨音類別。</p></div>
+      <div class="sound-card"><strong>2. Articulate</strong><p class="small">知道嘴唇、舌頭、聲帶在做什麼。</p></div>
+      <div class="sound-card"><strong>3. Contrast</strong><p class="small">用 minimal pairs 放大差異。</p></div>
+      <div class="sound-card"><strong>4. Produce</strong><p class="small">模仿、錄音、回聽。</p></div>
+      <div class="sound-card"><strong>5. Recognize</strong><p class="small">讓 ASR 告訴你系統「聽成什麼」。</p></div>
+      <div class="sound-card"><strong>6. Review</strong><p class="small">弱項以較高頻率重複出現。</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="daily" class="view">
+  <div class="card">
+    <span class="badge">Daily Mode · 10 min</span>
+    <h2>每日 10 分鐘複習</h2>
+    <div class="row">
+      <div class="timer" id="dailyTimer">10:00</div>
+      <button class="primary" id="dailyStart">開始</button>
+      <button class="secondary" id="dailyPause" disabled>暫停</button>
+      <button class="secondary" id="dailyReset">重設</button>
+    </div>
+    <div id="dailyTask" class="info">按「開始」後依序做：3 分鐘聽辨 → 2 分鐘 IPA 弱項 → 2 分鐘 shadowing → 2 分鐘 Recognition → 1 分鐘回顧。</div>
+    <div class="row">
+      <button class="secondary" data-jump="listenLab">去聽辨</button>
+      <button class="secondary" data-jump="ipaLab">去 IPA</button>
+      <button class="secondary" data-jump="recordLab">去 Shadowing</button>
+      <button class="secondary" data-jump="asrLab">去 Recognition</button>
+    </div>
+  </div>
+</section>
+
+<section id="l1" class="view lessonView" data-minutes="8">
+  <div class="card">
+    <span class="badge">Lesson 1 · 8 min</span><h2>Letter ≠ Sound ≠ IPA</h2>
+    <p>英文拼字是文字系統，IPA 是聲音系統。先建立這個模型，再學規則。</p>
+    <div class="grid3">
+      <div class="sound-card"><strong>cat</strong><div class="ipa">/kæt/</div><button class="speak" data-say="cat">🔊</button></div>
+      <div class="sound-card"><strong>cake</strong><div class="ipa">/keɪk/</div><button class="speak" data-say="cake">🔊</button></div>
+      <div class="sound-card"><strong>about</strong><div class="ipa">/əˈbaʊt/</div><button class="speak" data-say="about">🔊</button></div>
+    </div>
+    <p class="tip">同一個字母可能有不同聲音；同一個聲音也可能有不同拼法。</p>
+    <div class="quizbox lessonQuiz" data-answer="C" data-topic="Letter vs Sound">
+      <strong>正確觀念是？</strong>
+      <button class="choice" data-v="A">A. 每個字母只有一種發音</button>
+      <button class="choice" data-v="B">B. IPA 就是另一套英文字母</button>
+      <button class="choice" data-v="C">C. 拼字與聲音不是一對一</button>
+      <div class="feedback"></div>
+    </div>
+    <div class="reinforcement" data-reinforcement="l1"></div>
+    <div class="footer-actions"><span></span><button class="primary completeLesson" data-lesson="l1">完成 →</button></div>
+  </div>
+</section>
+
+<section id="l2" class="view lessonView" data-minutes="12">
+  <div class="card">
+    <span class="badge">Lesson 2 · 12 min</span><h2>美式子音：Place × Manner × Voicing</h2>
+    <table>
+      <tr><th>無聲</th><th>有聲</th><th>例子</th></tr>
+      <tr><td class="ipa">/p/</td><td class="ipa">/b/</td><td><button class="speak" data-say="pack back">pack / back</button></td></tr>
+      <tr><td class="ipa">/t/</td><td class="ipa">/d/</td><td><button class="speak" data-say="ten den">ten / den</button></td></tr>
+      <tr><td class="ipa">/k/</td><td class="ipa">/g/</td><td><button class="speak" data-say="coat goat">coat / goat</button></td></tr>
+      <tr><td class="ipa">/f/</td><td class="ipa">/v/</td><td><button class="speak" data-say="fan van">fan / van</button></td></tr>
+      <tr><td class="ipa">/θ/</td><td class="ipa">/ð/</td><td><button class="speak" data-say="think this">think / this</button></td></tr>
+      <tr><td class="ipa">/s/</td><td class="ipa">/z/</td><td><button class="speak" data-say="sip zip">sip / zip</button></td></tr>
+      <tr><td class="ipa">/ʃ/</td><td class="ipa">/ʒ/</td><td><button class="speak" data-say="pressure measure">pressure / measure</button></td></tr>
+      <tr><td class="ipa">/tʃ/</td><td class="ipa">/dʒ/</td><td><button class="speak" data-say="cheap jeep">cheap / jeep</button></td></tr>
+    </table>
+    <div class="note"><strong>華語使用者優先：</strong>/ɹ-l/、/θ-s/、/ð-d/、/v-w/、/n-ŋ/。</div>
+    <div class="grid2">
+      <div class="sound-card"><strong>/ɹ/ vs /l/</strong><p class="small">R 通常不讓舌尖碰上顎；L 舌尖碰齒齦脊。</p><button class="speak" data-say="right light">🔊 right / light</button></div>
+      <div class="sound-card"><strong>/v/ vs /w/</strong><p class="small">/v/ 上齒碰下唇；/w/ 雙唇圓起。</p><button class="speak" data-say="vest west">🔊 vest / west</button></div>
+    </div>
+    <div class="reinforcement" data-reinforcement="l2"></div>
+    <div class="footer-actions"><button class="secondary" data-prev="l1">←</button><button class="primary completeLesson" data-lesson="l2">完成 →</button></div>
+  </div>
+</section>
+
+<section id="l3" class="view lessonView" data-minutes="20">
+  <div class="card">
+    <span class="badge">Lesson 3 · 20 min</span><h2>American Vowel Map</h2>
+    <p>母音用「舌位高低 × 前後 × 圓唇」理解，不只背長短音。</p>
+    <div class="grid3">
+      <div class="sound-card"><strong class="bigipa">/i/</strong><div>sheep</div><div class="small">高、前、較緊</div><button class="speak" data-say="sheep">🔊</button></div>
+      <div class="sound-card"><strong class="bigipa">/ɪ/</strong><div>ship</div><div class="small">稍低、較鬆</div><button class="speak" data-say="ship">🔊</button></div>
+      <div class="sound-card"><strong class="bigipa">/ɛ/</strong><div>bed</div><div class="small">中前</div><button class="speak" data-say="bed">🔊</button></div>
+      <div class="sound-card"><strong class="bigipa">/æ/</strong><div>bad</div><div class="small">低前、張口較大</div><button class="speak" data-say="bad">🔊</button></div>
+      <div class="sound-card"><strong class="bigipa">/ɑ/</strong><div>hot</div><div class="small">低後</div><button class="speak" data-say="hot">🔊</button></div>
+      <div class="sound-card"><strong class="bigipa">/ʊ/</strong><div>book</div><div class="small">高後、鬆</div><button class="speak" data-say="book">🔊</button></div>
+      <div class="sound-card"><strong class="bigipa">/u/</strong><div>boot</div><div class="small">高後、圓唇</div><button class="speak" data-say="boot">🔊</button></div>
+      <div class="sound-card"><strong class="bigipa">/ʌ/</strong><div>cup</div><div class="small">中央、重讀</div><button class="speak" data-say="cup">🔊</button></div>
+      <div class="sound-card"><strong class="bigipa">/ə/</strong><div>about</div><div class="small">schwa，弱化</div><button class="speak" data-say="about">🔊</button></div>
+    </div>
+    <h3>三組高價值 contrast</h3>
+    <div class="row">
+      <button class="speak" data-say="sheep ship">sheep / ship</button>
+      <button class="speak" data-say="fool full">fool / full</button>
+      <button class="speak" data-say="bed bad">bed / bad</button>
+    </div>
+    <div class="reinforcement" data-reinforcement="l3"></div>
+    <div class="footer-actions"><button class="secondary" data-prev="l2">←</button><button class="primary completeLesson" data-lesson="l3">完成 →</button></div>
+  </div>
+</section>
+
+<section id="l4" class="view lessonView" data-minutes="15">
+  <div class="card">
+    <span class="badge">Lesson 4 · 15 min</span><h2>Connected Speech：真正的美式節奏</h2>
+    <div class="grid2">
+      <div class="sound-card"><strong>Schwa /ə/</strong><p class="small">非重讀音節常弱化。</p><button class="speak" data-say="about support banana">🔊</button></div>
+      <div class="sound-card"><strong>Word stress</strong><p class="small">重音音節更長、更清楚，弱音節常縮短。</p><button class="speak" data-say="computer photography">🔊</button></div>
+      <div class="sound-card"><strong>Flap T [ɾ]</strong><p class="small">water, better, city 等常出現。</p><button class="speak" data-say="water better city">🔊</button></div>
+      <div class="sound-card"><strong>Linking</strong><p class="small">前字尾音常與後字開頭自然連接。</p><button class="speak" data-say="pick it up turn it on">🔊</button></div>
+      <div class="sound-card"><strong>Reduced function words</strong><p class="small">to, for, and, can 在句中常弱化。</p><button class="speak" data-say="I want to go to the store">🔊</button></div>
+      <div class="sound-card"><strong>Rhotic R</strong><p class="small">General American 通常保留 post-vocalic r。</p><button class="speak" data-say="car work teacher">🔊</button></div>
+    </div>
+    <p class="note">目標不是「每個字都清楚」，而是讓 <strong>content words 清楚、function words 合理弱化</strong>。</p>
+    <div class="reinforcement" data-reinforcement="l4"></div>
+    <div class="footer-actions"><button class="secondary" data-prev="l3">←</button><button class="primary completeLesson" data-lesson="l4">完成 →</button></div>
+  </div>
+</section>
+
+<section id="l5" class="view lessonView" data-minutes="15">
+  <div class="card">
+    <span class="badge">Lesson 5 · 15 min</span><h2>Listening Lab：Hear → Identify</h2>
+    <p>不要看嘴型，先靠耳朵建立 phonemic category。</p>
+    <div class="info">進到 Adaptive Listening，目標先做到至少 20 題、80% 以上。</div>
+    <button class="primary" data-jump="listenLab">開啟 Adaptive Listening</button>
+    <div class="reinforcement" data-reinforcement="l5"></div>
+    <div class="footer-actions"><button class="secondary" data-prev="l4">←</button><button class="primary completeLesson" data-lesson="l5">完成 →</button></div>
+  </div>
+</section>
+
+<section id="l6" class="view lessonView" data-minutes="15">
+  <div class="card">
+    <span class="badge">Lesson 6 · 15 min</span><h2>Spelling → Sound Decoding</h2>
+    <p><strong>WORD → SYLLABLE → STRESS → GRAPHEME CHUNKS → SOUND → IPA CHECK</strong></p>
+    <table>
+      <tr><th>Pattern</th><th>常見讀法</th><th>例</th></tr>
+      <tr><td>CVC</td><td>短母音常見</td><td>cat, bed, sit, hot, cup</td></tr>
+      <tr><td>VCe / silent-e</td><td>常使前母音改變</td><td>cap→cape, kit→kite</td></tr>
+      <tr><td>ai/ay</td><td class="ipa">/eɪ/</td><td>rain, day</td></tr>
+      <tr><td>ee</td><td class="ipa">/i/</td><td>see</td></tr>
+      <tr><td>oa</td><td class="ipa">/oʊ/</td><td>boat</td></tr>
+      <tr><td>oi/oy</td><td class="ipa">/ɔɪ/</td><td>coin, boy</td></tr>
+      <tr><td>ou/ow</td><td class="ipa">/aʊ/ 常見</td><td>out, now</td></tr>
+      <tr><td>c + e/i/y</td><td class="ipa">/s/ 常見</td><td>city, cent</td></tr>
+      <tr><td>g + e/i/y</td><td class="ipa">/dʒ/ 常見</td><td>giant, gym</td></tr>
+    </table>
+    <div class="note">英文規則是 <strong>高機率 heuristic</strong>，不是百分之百。ea：team /i/、head /ɛ/、great /eɪ/。</div>
+    <div class="reinforcement" data-reinforcement="l6"></div>
+    <div class="footer-actions"><button class="secondary" data-prev="l5">←</button><button class="primary completeLesson" data-lesson="l6">完成 →</button></div>
+  </div>
+</section>
+
+<section id="l7" class="view lessonView" data-minutes="10">
+  <div class="card">
+    <span class="badge">Lesson 7 · 10 min</span><h2>Stress、Suffix、字尾變化</h2>
+    <table>
+      <tr><th>項目</th><th>規律</th><th>例</th></tr>
+      <tr><td>-tion</td><td class="ipa">/ʃən/</td><td>nation, information</td></tr>
+      <tr><td>-sion</td><td class="ipa">/ʒən/ 或 /ʃən/</td><td>vision, discussion</td></tr>
+      <tr><td>-ic</td><td>常使前一音節附近帶重音</td><td>photographic</td></tr>
+      <tr><td>-ity</td><td>常改變 stress</td><td>electricity</td></tr>
+      <tr><td>-ed</td><td>/t/、/d/、/ɪd/ 三類</td><td>worked, played, wanted</td></tr>
+      <tr><td>-s/-es</td><td>/s/、/z/、/ɪz/ 三類</td><td>cats, dogs, buses</td></tr>
+    </table>
+    <p><button class="speak" data-say="worked played wanted cats dogs buses">🔊 聽字尾差異</button></p>
+    <div class="reinforcement" data-reinforcement="l7"></div>
+    <div class="footer-actions"><button class="secondary" data-prev="l6">←</button><button class="primary completeLesson" data-lesson="l7">完成 →</button></div>
+  </div>
+</section>
+
+<section id="l8" class="view lessonView" data-minutes="10">
+  <div class="card">
+    <span class="badge">Lesson 8 · 10 min</span><h2>Shadowing & Recording</h2>
+    <p>流程：聽一次 → shadowing → 錄音 → 回聽 → 修正一個目標，不要一次改全部。</p>
+    <button class="primary" data-jump="recordLab">開啟 Recording Studio</button>
+    <div class="reinforcement" data-reinforcement="l8"></div>
+    <div class="footer-actions"><button class="secondary" data-prev="l7">←</button><button class="primary completeLesson" data-lesson="l8">完成 →</button></div>
+  </div>
+</section>
+
+<section id="l9" class="view lessonView" data-minutes="10">
+  <div class="card">
+    <span class="badge">Lesson 9 · 10 min</span><h2>Recognition Feedback</h2>
+    <p>讓瀏覽器告訴你它「聽成什麼」。這不是專業口音評分，但很適合檢查 minimal pairs 是否容易被誤辨。</p>
+    <button class="primary" data-jump="asrLab">開啟 Recognition Lab</button>
+    <div class="reinforcement" data-reinforcement="l9"></div>
+    <div class="footer-actions"><button class="secondary" data-prev="l8">←</button><button class="primary completeLesson" data-lesson="l9">完成 →</button></div>
+  </div>
+</section>
+
+<section id="l10" class="view lessonView" data-minutes="5">
+  <div class="card">
+    <span class="badge">Lesson 10 · 5 min</span><h2>Final Check</h2>
+    <div class="quizbox lessonQuiz" data-answer="B" data-topic="/i/ vs /ɪ/">
+      <strong>sheep / ship 的主要差異：</strong>
+      <button class="choice" data-v="A">A. /ʃ/ vs /s/</button><button class="choice" data-v="B">B. /i/ vs /ɪ/</button><button class="choice" data-v="C">C. /p/ vs /b/</button><div class="feedback"></div>
+    </div>
+    <div class="quizbox lessonQuiz" data-answer="A" data-topic="Flap T">
+      <strong>water 裡 /t/ 在 General American 常見實際音值：</strong>
+      <button class="choice" data-v="A">A. [ɾ]</button><button class="choice" data-v="B">B. [θ]</button><button class="choice" data-v="C">C. [ʃ]</button><div class="feedback"></div>
+    </div>
+    <div class="quizbox lessonQuiz" data-answer="C" data-topic="-ed ending">
+      <strong>wanted 的 -ed 通常是：</strong>
+      <button class="choice" data-v="A">A. /t/</button><button class="choice" data-v="B">B. /d/</button><button class="choice" data-v="C">C. /ɪd/</button><div class="feedback"></div>
+    </div>
+    <div class="reinforcement" data-reinforcement="l10"></div>
+    <div class="footer-actions"><button class="secondary" data-prev="l9">←</button><button class="primary completeLesson" data-lesson="l10">完成核心課程 ✓</button></div>
+  </div>
+</section>
+
+<section id="ipaLab" class="view">
+  <div class="card">
+    <span class="badge">IPA Lab</span><h2>互動式 General American 音素表</h2>
+    <div class="row">
+      <select id="ipaFilter" style="max-width:220px"><option value="all">全部</option><option value="consonant">子音</option><option value="vowel">母音 / 雙母音</option></select>
+      <input id="ipaSearch" type="text" placeholder="搜尋 symbol / example / spelling" style="max-width:300px">
+    </div>
+    <div id="ipaGrid" class="grid4" style="margin-top:12px"></div>
+  </div>
+  <div class="card" id="ipaDetailCard">
+    <h3 id="ipaTitle">點選上方音素</h3>
+    <div id="ipaDetail" class="small">會顯示口腔位置、常見拼法、minimal pairs 與示範。</div>
+  </div>
+</section>
+
+<section id="listenLab" class="view">
+  <div class="card">
+    <span class="badge">Adaptive Listening</span><h2>自適應 Minimal Pair 聽辨</h2>
+    <div class="grid3">
+      <div><label>範圍</label><select id="listenCategory"><option value="all">全部</option><option value="vowel">母音</option><option value="consonant">子音</option></select></div>
+      <div><label>難度</label><select id="listenDifficulty"><option value="2">Level 1 · 二選一</option><option value="4">Level 2 · 四選一</option></select></div>
+      <div><label>自動重播</label><select id="listenRepeats"><option value="1">1 次</option><option value="2">2 次</option><option value="3">3 次</option></select></div>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <button class="primary" id="listenNew">🎧 新題目</button>
+      <button class="secondary" id="listenReplay" disabled>↻ 重播</button>
+      <span id="listenKpi" class="chip">0 / 0</span><span id="listenStreak" class="chip">streak 0</span>
+    </div>
+    <div id="listenChoices" style="margin-top:10px"></div>
+    <div id="listenFeedback" class="feedback"></div>
+    <div class="tip">答錯的 contrast 會增加後續抽到的權重。這是簡易 adaptive practice。</div>
+  </div>
+</section>
+
+<section id="recordLab" class="view">
+  <div class="card">
+    <span class="badge">Recording Studio</span><h2>模仿、錄音、A/B 回聽</h2>
+    <div class="grid2">
+      <div>
+        <label>練習素材</label>
+        <select id="recordTarget">
+          <option>ship sheep</option><option>full fool</option><option>bed bad</option><option>right light</option>
+          <option>think sink</option><option>vest west</option><option>water better city</option>
+          <option>I want to go to the store.</option><option>Pick it up and turn it on.</option>
+        </select>
+        <div class="row" style="margin-top:10px"><button class="speak" id="recordModel">🔊 聽 Model</button><button class="secondary" id="recordSlow">🐢 慢速</button></div>
+      </div>
+      <div>
+        <label>自訂素材</label>
+        <input id="recordCustom" type="text" placeholder="輸入你要練的字或句子">
+        <button class="secondary" id="useRecordCustom" style="margin-top:10px">套用自訂素材</button>
+      </div>
+    </div>
+    <hr>
+    <div class="row">
+      <button class="primary" id="recStart">● 開始錄音</button><button class="secondary" id="recStop" disabled>■ 停止</button>
+      <span id="recStatus" class="small">尚未錄音</span>
+    </div>
+    <audio id="recPlayback" controls style="display:none;width:100%;margin-top:10px"></audio>
+    <div class="note">錄音只在瀏覽器本機暫存，不會自動上傳。若直接雙擊 HTML 時麥克風被擋，可用 VS Code Live Server 開啟。</div>
+  </div>
+</section>
+
+<section id="asrLab" class="view">
+  <div class="card">
+    <span class="badge">Recognition Lab</span><h2>系統到底聽成什麼？</h2>
+    <div class="grid2">
+      <div>
+        <label>目標</label>
+        <select id="asrTarget">
+          <option>ship</option><option>sheep</option><option>full</option><option>fool</option><option>bed</option><option>bad</option>
+          <option>right</option><option>light</option><option>think</option><option>sink</option><option>vest</option><option>west</option>
+          <option>water</option><option>better</option><option>city</option>
+        </select>
+        <div class="row" style="margin-top:10px"><button class="speak" id="asrModel">🔊 先聽</button><button class="primary" id="asrStart">🎙 開始辨識</button></div>
+      </div>
+      <div>
+        <label>自訂目標</label>
+        <input id="asrCustom" type="text" placeholder="例如: information">
+        <button class="secondary" id="useAsrCustom" style="margin-top:10px">套用</button>
+      </div>
+    </div>
+    <div id="asrStatus" class="info">尚未開始。</div>
+    <div id="asrResult"></div>
+    <div class="note"><strong>注意：</strong>這是 speech recognition feedback，不是臨床或專業 pronunciation scoring。它適合看「是否被辨成另一個詞」，不適合拿來評判口音好壞。</div>
+  </div>
+</section>
+
+<section id="customLab" class="view">
+  <div class="card">
+    <span class="badge">Custom Practice</span><h2>自訂單字 / 句子練習</h2>
+    <textarea id="customText" placeholder="輸入任何英文，例如：The server is running at a higher temperature."></textarea>
+    <div class="row" style="margin-top:10px">
+      <button class="primary" id="customSpeak">🔊 播放</button>
+      <button class="secondary" id="customSlow">🐢 慢速</button>
+      <button class="secondary" id="customChunk">▤ 粗略切詞</button>
+    </div>
+    <div id="customChunks" class="chips" style="margin-top:10px"></div>
+    <div class="info">離線單檔版本不會假裝自動產生可靠 IPA。需要精確 IPA 時，請用可靠字典核對；這裡負責播放、錄音、recognition 與練習管理。</div>
+    <div class="row">
+      <a class="linkbtn" href="https://www.merriam-webster.com/" target="_blank" rel="noopener">Merriam-Webster</a>
+      <a class="linkbtn" href="https://dictionary.cambridge.org/" target="_blank" rel="noopener">Cambridge Dictionary</a>
+      <a class="linkbtn" href="https://www.youtube.com/@rachelsenglish" target="_blank" rel="noopener">Rachel's English</a>
+    </div>
+  </div>
+</section>
+
+<section id="reviewLab" class="view">
+  <div class="card">
+    <span class="badge">Spaced Review</span><h2>間隔複習</h2>
+    <p>系統會把答錯的 contrast 放進複習佇列。你可用「Again / Hard / Good / Easy」決定下次間隔。</p>
+    <div id="reviewCard" class="sound-card"></div>
+    <div class="row" style="margin-top:10px">
+      <button class="danger reviewRate" data-q="again">Again</button>
+      <button class="secondary reviewRate" data-q="hard">Hard</button>
+      <button class="primary reviewRate" data-q="good">Good</button>
+      <button class="secondary reviewRate" data-q="easy">Easy</button>
+    </div>
+  </div>
+</section>
+
+<section id="report" class="view">
+  <div class="card">
+    <span class="badge">Report</span><h2>弱項與學習報告</h2>
+    <div class="grid3">
+      <div class="kpi"><div class="small">Listening attempts</div><div class="num" id="repListenN">0</div></div>
+      <div class="kpi"><div class="small">Recognition attempts</div><div class="num" id="repAsrN">0</div></div>
+      <div class="kpi"><div class="small">Weak topics</div><div class="num" id="repWeakN">0</div></div>
+    </div>
+    <h3>單元測驗成績</h3><div style="overflow:auto"><table class="stat-table"><thead><tr><th>單元</th><th>分數</th><th>狀態</th></tr></thead><tbody id="unitQuizStats"></tbody></table></div>
+    <h3>Contrast 統計</h3>
+    <div style="overflow:auto"><table class="stat-table"><thead><tr><th>主題</th><th>正確</th><th>總數</th><th>Accuracy</th></tr></thead><tbody id="topicStats"></tbody></table></div>
+    <h3>目前優先複習</h3><div id="reportWeak" class="chips"></div>
+    <div class="row" style="margin-top:12px"><button class="secondary" id="downloadCsv">下載 CSV 報告</button><button class="secondary" id="clearStats">清除統計</button></div>
+  </div>
+</section>
+
+<section id="settings" class="view">
+  <div class="card">
+    <span class="badge">Settings</span><h2>語音與資料設定</h2>
+    <div class="grid2">
+      <div><label>美式語音</label><select id="voiceSelect"></select></div>
+      <div><label>播放速度 <span id="rateLabel">0.82×</span></label><input id="rateRange" type="range" min="0.55" max="1.15" step="0.05" value="0.82"></div>
+      <div><label>Pitch <span id="pitchLabel">1.00</span></label><input id="pitchRange" type="range" min="0.8" max="1.2" step="0.05" value="1"></div>
+      <div><label>預設重播次數</label><select id="globalRepeats"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></div>
+    </div>
+    <hr>
+    <h3>介面設定（iPhone / iPad）</h3>
+    <div class="grid2">
+      <div>
+        <label>文字大小</label>
+        <select id="fontScaleSelect">
+          <option value="small">較小</option>
+          <option value="normal">標準</option>
+          <option value="large">大</option>
+          <option value="xlarge">特大</option>
+        </select>
+      </div>
+      <div>
+        <label>顯示密度</label>
+        <select id="densitySelect">
+          <option value="comfortable">舒適</option>
+          <option value="compact">緊湊</option>
+        </select>
+      </div>
+      <div>
+        <label>手機底部導覽列</label>
+        <select id="bottomNavSelect">
+          <option value="on">顯示</option>
+          <option value="off">隱藏</option>
+        </select>
+      </div>
+      <div>
+        <label>目前介面</label>
+        <div class="small" id="deviceLayoutInfo">偵測中…</div>
+      </div>
+    </div>
+
+    <h3>iOS / iPadOS 相容性</h3>
+    <div class="ios-help">
+      <div class="compat-grid" id="compatGrid"></div>
+      <p class="small" style="margin-bottom:0">
+        若你需要麥克風錄音或語音辨識，使用 <strong>Safari + HTTPS 網頁</strong>通常比直接從「檔案」App 打開 HTML 穩定。
+        語音辨識是否可用仍取決於目前的 Safari / iOS 版本。
+      </p>
+    </div>
+
+    <h3>iPhone / iPad 使用提示</h3>
+    <div class="ios-help">
+      <p style="margin-top:0"><strong>直向：</strong>使用底部導覽；右上角 ☰ 可開完整課程選單。</p>
+      <p><strong>橫向：</strong>內容會自動增加欄數，iPad 橫向接近桌面版。</p>
+      <p style="margin-bottom:0"><strong>加入主畫面：</strong>若此 HTML 已放在 HTTPS 網站，Safari → 分享 →「加入主畫面」，使用體驗會更接近 App。</p>
+    </div>
+
+    <hr>
+    <h3>資料備份</h3>
+    <div class="row">
+      <button class="primary" id="exportJson">匯出學習資料 JSON</button>
+      <label class="secondary" style="padding:9px 13px;border-radius:10px;cursor:pointer">匯入 JSON<input id="importJson" type="file" accept=".json,application/json" style="display:none"></label>
+      <button class="danger" id="resetAll">全部重設</button>
+    </div>
+    <h3>鍵盤快捷鍵</h3>
+    <p class="small"><kbd>Space</kbd> 重播目前 Listening 題目（在 Listening Lab）　 <kbd>N</kbd> 新題目　 <kbd>R</kbd> 重播 model（部分頁面）</p>
+  </div>
+</section>
+</main>
+</div>
+
+<nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="手機快速導覽">
+  <button data-mobile-view="dashboard"><span class="nav-icon">⌂</span><span>首頁</span></button>
+  <button id="mobileLearnBtn"><span class="nav-icon">▶</span><span>學習</span></button>
+  <button data-mobile-view="listenLab"><span class="nav-icon">🎧</span><span>練習</span></button>
+  <button data-mobile-view="report"><span class="nav-icon">▥</span><span>報告</span></button>
+  <button data-mobile-view="settings"><span class="nav-icon">⚙</span><span>設定</span></button>
+</nav>
+
+<script>
+// ---------- State ----------
+const COURSE_IDS=['l1','l2','l3','l4','l5','l6','l7','l8','l9','l10'];
+const defaultState={
+  done:[], theme:'light', rate:.82, pitch:1, voiceName:'', repeats:1,
+  fontScale:'normal', density:'comfortable', bottomNav:true,
+  listening:{correct:0,total:0,streak:0,topics:{}},
+  asr:{success:0,total:0},
+  review:{},
+  weak:{},
+  visits:{}
+};
+let state=loadState();
+function loadState(){
+  try{
+    const x=JSON.parse(localStorage.getItem('aePronLabState'));
+    return Object.assign({},structuredClone(defaultState),x||{},{
+      listening:Object.assign({},structuredClone(defaultState.listening),(x||{}).listening||{}),
+      asr:Object.assign({},structuredClone(defaultState.asr),(x||{}).asr||{}),
+      review:Object.assign({},(x||{}).review||{}),
+      weak:Object.assign({},(x||{}).weak||{}),
+      visits:Object.assign({},(x||{}).visits||{})
+    });
+  }catch(e){return structuredClone(defaultState)}
+}
+function saveState(){localStorage.setItem('aePronLabState',JSON.stringify(state));updateAll();}
+
+function addWeak(topic, amount=1){
+  if(!topic)return;
+  state.weak[topic]=(state.weak[topic]||0)+amount;
+  if(!state.review[topic]) state.review[topic]={due:Date.now(),interval:0,reps:0};
+  saveState();
+}
+function reduceWeak(topic){
+  if(state.weak[topic]){state.weak[topic]=Math.max(0,state.weak[topic]-1);saveState();}
+}
+function pct(a,b){return b?Math.round(a/b*100):null}
+
+// ---------- Navigation ----------
+const views=[...document.querySelectorAll('.view')];
+const navButtons=[...document.querySelectorAll('.sidebar button[data-view]')];
+function showView(id){
+  views.forEach(v=>v.classList.toggle('active',v.id===id));
+  navButtons.forEach(b=>b.classList.toggle('active',b.dataset.view===id));
+  document.querySelectorAll('[data-mobile-view]').forEach(b=>b.classList.toggle('active',b.dataset.mobileView===id));
+  state.visits[id]=(state.visits[id]||0)+1;
+  localStorage.setItem('aePronLabState',JSON.stringify(state));
+  if(id==='report')renderReport();
+  if(id==='reviewLab')renderReview();
+  document.body.classList.remove('sidebar-open');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+navButtons.forEach(b=>b.onclick=()=>showView(b.dataset.view));
+document.querySelectorAll('[data-jump]').forEach(b=>b.onclick=()=>showView(b.dataset.jump));
+document.querySelectorAll('[data-prev]').forEach(b=>b.onclick=()=>showView(b.dataset.prev));
+
+document.querySelectorAll('[data-mobile-view]').forEach(b=>b.onclick=()=>showView(b.dataset.mobileView));
+const mobileMenuBtn=document.getElementById('mobileMenuBtn');
+const sidebarBackdrop=document.getElementById('sidebarBackdrop');
+mobileMenuBtn.onclick=()=>document.body.classList.toggle('sidebar-open');
+sidebarBackdrop.onclick=()=>document.body.classList.remove('sidebar-open');
+function nextLearningView(){
+  if(!(state.visits?.pre0>0) || !(state.preQuiz?.finished)) return 'pre0';
+  return COURSE_IDS.find(id=>!state.done.includes(id)) || 'daily';
+}
+document.getElementById('mobileLearnBtn').onclick=()=>showView(nextLearningView());
+
+
+// ---------- Theme ----------
+function applyTheme(){
+  document.body.classList.toggle('dark',state.theme==='dark');
+  document.getElementById('themeBtn').textContent=state.theme==='dark'?'☀ 淺色模式':'◐ 深色模式';
+}
+document.getElementById('themeBtn').onclick=()=>{state.theme=state.theme==='dark'?'light':'dark';saveState();applyTheme();};
+
+function applyUISettings(){
+  document.body.classList.remove('ui-small','ui-large','ui-xlarge','ui-compact','no-bottom-nav');
+  if(state.fontScale==='small')document.body.classList.add('ui-small');
+  if(state.fontScale==='large')document.body.classList.add('ui-large');
+  if(state.fontScale==='xlarge')document.body.classList.add('ui-xlarge');
+  if(state.density==='compact')document.body.classList.add('ui-compact');
+  if(state.bottomNav===false)document.body.classList.add('no-bottom-nav');
+
+  const fs=document.getElementById('fontScaleSelect');
+  const ds=document.getElementById('densitySelect');
+  const bs=document.getElementById('bottomNavSelect');
+  if(fs)fs.value=state.fontScale||'normal';
+  if(ds)ds.value=state.density||'comfortable';
+  if(bs)bs.value=state.bottomNav===false?'off':'on';
+  updateDeviceInfo();
+}
+function updateDeviceInfo(){
+  const el=document.getElementById('deviceLayoutInfo'); if(!el)return;
+  const w=window.innerWidth,h=window.innerHeight;
+  const mode=w<=700?'手機直覺介面':(w<=980?'平板 / 小螢幕介面':'桌面介面');
+  const ori=w>h?'橫向':'直向';
+  el.textContent=`${mode} · ${ori} · ${w}×${h} CSS px`;
+}
+document.getElementById('fontScaleSelect').onchange=e=>{state.fontScale=e.target.value;saveState();applyUISettings()};
+document.getElementById('densitySelect').onchange=e=>{state.density=e.target.value;saveState();applyUISettings()};
+document.getElementById('bottomNavSelect').onchange=e=>{state.bottomNav=e.target.value==='on';saveState();applyUISettings()};
+window.addEventListener('resize',updateDeviceInfo);
+window.addEventListener('orientationchange',()=>setTimeout(updateDeviceInfo,180));
+
+function renderCompatibility(){
+  const grid=document.getElementById('compatGrid'); if(!grid)return;
+  const checks=[
+    ['美式語音播放', 'speechSynthesis' in window],
+    ['麥克風錄音', !!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia&&window.MediaRecorder)],
+    ['Speech Recognition', !!(window.SpeechRecognition||window.webkitSpeechRecognition)],
+    ['學習進度儲存', (()=>{try{localStorage.setItem('__t','1');localStorage.removeItem('__t');return true}catch(e){return false}})()]
+  ];
+  grid.innerHTML=checks.map(([name,ok])=>`<div class="compat-item"><div>${name}</div><div class="${ok?'compat-ok':'compat-warn'}">${ok?'✓ 可用':'△ 此環境未提供'}</div></div>`).join('');
+}
+
+
+// ---------- TTS ----------
+let voices=[];
+const voiceSelect=document.getElementById('voiceSelect');
+function loadVoices(){
+  voices=speechSynthesis.getVoices();
+  const us=voices.filter(v=>/^en-US/i.test(v.lang));
+  voiceSelect.innerHTML='';
+  (us.length?us:voices.filter(v=>/^en/i.test(v.lang))).forEach(v=>{
+    const o=document.createElement('option');o.value=v.name;o.textContent=`${v.name} (${v.lang})`;voiceSelect.appendChild(o);
+  });
+  if(state.voiceName && [...voiceSelect.options].some(o=>o.value===state.voiceName)) voiceSelect.value=state.voiceName;
+  else if(voiceSelect.options.length){voiceSelect.selectedIndex=0;state.voiceName=voiceSelect.value;}
+}
+speechSynthesis.onvoiceschanged=loadVoices; loadVoices();
+
+function selectedVoice(){
+  return voices.find(v=>v.name===state.voiceName)||voices.find(v=>/^en-US/i.test(v.lang))||voices[0];
+}
+function speak(text, opts={}){
+  speechSynthesis.cancel();
+  const repeats=opts.repeats??state.repeats??1, rate=opts.rate??state.rate, pitch=opts.pitch??state.pitch;
+  let i=0;
+  const play=()=>{
+    const u=new SpeechSynthesisUtterance(text);u.lang='en-US';u.rate=rate;u.pitch=pitch;
+    const v=selectedVoice();if(v)u.voice=v;
+    u.onend=()=>{i++;if(i<repeats)setTimeout(play,350)};
+    speechSynthesis.speak(u);
+  }; play();
+}
+document.querySelectorAll('.speak[data-say]').forEach(b=>b.onclick=()=>speak(b.dataset.say));
+document.getElementById('quickSpeakBtn').onclick=()=>speak('American English pronunciation practice.');
+voiceSelect.onchange=()=>{state.voiceName=voiceSelect.value;saveState()};
+const rateRange=document.getElementById('rateRange'),pitchRange=document.getElementById('pitchRange');
+rateRange.value=state.rate;pitchRange.value=state.pitch;
+rateRange.oninput=()=>{state.rate=Number(rateRange.value);document.getElementById('rateLabel').textContent=state.rate.toFixed(2)+'×';saveState()};
+pitchRange.oninput=()=>{state.pitch=Number(pitchRange.value);document.getElementById('pitchLabel').textContent=state.pitch.toFixed(2);saveState()};
+document.getElementById('rateLabel').textContent=Number(state.rate).toFixed(2)+'×';
+document.getElementById('pitchLabel').textContent=Number(state.pitch).toFixed(2);
+document.getElementById('globalRepeats').value=String(state.repeats||1);
+document.getElementById('globalRepeats').onchange=e=>{state.repeats=Number(e.target.value);saveState()};
+
+// ---------- Lessons ----------
+document.querySelectorAll('.completeLesson').forEach(b=>{
+  b.onclick=()=>{
+    const qrec=state.unitQuiz?.[b.dataset.lesson];
+    if(!qrec || !qrec.finished){alert('請先完成本單元 10 題測驗，再標記單元完成。');return;}
+    if(!state.done.includes(b.dataset.lesson))state.done.push(b.dataset.lesson);
+    saveState();
+    const i=COURSE_IDS.indexOf(b.dataset.lesson);
+    if(i<COURSE_IDS.length-1) showView(COURSE_IDS[i+1]);
+    else showView('dashboard');
+  }
+});
+document.querySelectorAll('.lessonQuiz').forEach(q=>{
+  q.querySelectorAll('.choice').forEach(c=>{
+    c.onclick=()=>{
+      const ok=c.dataset.v===q.dataset.answer, f=q.querySelector('.feedback');
+      f.textContent=ok?'✓ 正確':'✗ 再想一次';f.className='feedback '+(ok?'ok':'bad');
+      if(!ok)addWeak(q.dataset.topic);
+    }
+  })
+});
+
+// ---------- Start Here: Alphabet + IPA reference ----------
+const alphabetData = [
+  {l:'A',ipa:'/eɪ/',sounds:'常見：/æ/ apple；/eɪ/ name；/ə/ about'},
+  {l:'B',ipa:'/bi/',sounds:'常見：/b/ book, baby'},
+  {l:'C',ipa:'/si/',sounds:'常見：/k/ cat；/s/ city'},
+  {l:'D',ipa:'/di/',sounds:'常見：/d/ dog, day'},
+  {l:'E',ipa:'/i/',sounds:'常見：/ɛ/ bed；/i/ he；/ɪ/ pretty'},
+  {l:'F',ipa:'/ɛf/',sounds:'常見：/f/ fan, coffee'},
+  {l:'G',ipa:'/dʒi/',sounds:'常見：/g/ go；/dʒ/ giant'},
+  {l:'H',ipa:'/eɪtʃ/',sounds:'常見：/h/ hat；也可能不發音：hour'},
+  {l:'I',ipa:'/aɪ/',sounds:'常見：/ɪ/ sit；/aɪ/ time'},
+  {l:'J',ipa:'/dʒeɪ/',sounds:'常見：/dʒ/ job, jump'},
+  {l:'K',ipa:'/keɪ/',sounds:'常見：/k/ key；有時不發音：know'},
+  {l:'L',ipa:'/ɛl/',sounds:'常見：/l/ light, feel'},
+  {l:'M',ipa:'/ɛm/',sounds:'常見：/m/ man, summer'},
+  {l:'N',ipa:'/ɛn/',sounds:'常見：/n/ no；在 ng 中可對應 /ŋ/'},
+  {l:'O',ipa:'/oʊ/',sounds:'常見：/ɑ/ hot；/oʊ/ home；/ʌ/ love'},
+  {l:'P',ipa:'/pi/',sounds:'常見：/p/ pen；ph 常為 /f/'},
+  {l:'Q',ipa:'/kju/',sounds:'常見 qu：/kw/ queen'},
+  {l:'R',ipa:'/ɑɹ/',sounds:'常見：/ɹ/ red；美式通常保留 r'},
+  {l:'S',ipa:'/ɛs/',sounds:'常見：/s/ see；/z/ rose'},
+  {l:'T',ipa:'/ti/',sounds:'常見：/t/ ten；美式中可實現 [ɾ]'},
+  {l:'U',ipa:'/ju/',sounds:'常見：/ʌ/ cup；/u/ rule；/ju/ music'},
+  {l:'V',ipa:'/vi/',sounds:'常見：/v/ van, very'},
+  {l:'W',ipa:'/ˈdʌbəlju/',sounds:'常見：/w/ water；wr 中常不發 w'},
+  {l:'X',ipa:'/ɛks/',sounds:'常見：/ks/ box；/gz/ exam'},
+  {l:'Y',ipa:'/waɪ/',sounds:'常見：/j/ yes；/i/ happy；/aɪ/ my'},
+  {l:'Z',ipa:'/zi/',sounds:'美式字母名稱；常見：/z/ zoo'}
+];
+const ipaReferenceData = [
+  {sym:'/p/',type:'consonant',word:'pack',hint:'無聲雙唇塞音'}, {sym:'/b/',type:'consonant',word:'back',hint:'有聲雙唇塞音'},
+  {sym:'/t/',type:'consonant',word:'ten',hint:'無聲齒齦塞音'}, {sym:'/d/',type:'consonant',word:'den',hint:'有聲齒齦塞音'},
+  {sym:'/k/',type:'consonant',word:'coat',hint:'無聲軟顎塞音'}, {sym:'/g/',type:'consonant',word:'goat',hint:'有聲軟顎塞音'},
+  {sym:'/f/',type:'consonant',word:'fan',hint:'無聲唇齒摩擦音'}, {sym:'/v/',type:'consonant',word:'van',hint:'有聲唇齒摩擦音'},
+  {sym:'/θ/',type:'consonant',word:'think',hint:'無聲齒間摩擦音'}, {sym:'/ð/',type:'consonant',word:'this',hint:'有聲齒間摩擦音'},
+  {sym:'/s/',type:'consonant',word:'sip',hint:'無聲齒齦摩擦音'}, {sym:'/z/',type:'consonant',word:'zip',hint:'有聲齒齦摩擦音'},
+  {sym:'/ʃ/',type:'consonant',word:'ship',hint:'無聲後齒齦摩擦音'}, {sym:'/ʒ/',type:'consonant',word:'measure',hint:'有聲後齒齦摩擦音'},
+  {sym:'/h/',type:'consonant',word:'hat',hint:'聲門摩擦音'}, {sym:'/tʃ/',type:'consonant',word:'cheap',hint:'無聲塞擦音'},
+  {sym:'/dʒ/',type:'consonant',word:'jeep',hint:'有聲塞擦音'}, {sym:'/m/',type:'consonant',word:'man',hint:'雙唇鼻音'},
+  {sym:'/n/',type:'consonant',word:'no',hint:'齒齦鼻音'}, {sym:'/ŋ/',type:'consonant',word:'sing',hint:'軟顎鼻音'},
+  {sym:'/l/',type:'consonant',word:'light',hint:'側音'}, {sym:'/ɹ/',type:'consonant',word:'right',hint:'美式 R'},
+  {sym:'/j/',type:'consonant',word:'yes',hint:'palatal glide'}, {sym:'/w/',type:'consonant',word:'west',hint:'labial-velar glide'},
+  {sym:'/i/',type:'vowel',word:'sheep',hint:'高前母音'}, {sym:'/ɪ/',type:'vowel',word:'ship',hint:'近高前母音'},
+  {sym:'/ɛ/',type:'vowel',word:'bed',hint:'中前母音'}, {sym:'/æ/',type:'vowel',word:'bad',hint:'低前母音'},
+  {sym:'/ɑ/',type:'vowel',word:'hot',hint:'低後母音'}, {sym:'/ɔ/',type:'vowel',word:'thought',hint:'後圓唇母音；部分美式口音與 /ɑ/ 合流'},
+  {sym:'/ʊ/',type:'vowel',word:'full',hint:'近高後母音'}, {sym:'/u/',type:'vowel',word:'fool',hint:'高後圓唇母音'},
+  {sym:'/ʌ/',type:'vowel',word:'cup',hint:'中央附近重讀母音'}, {sym:'/ə/',type:'vowel',word:'about',hint:'schwa；典型弱化母音'},
+  {sym:'/ɝ/',type:'vowel',word:'bird',hint:'重讀 R-colored vowel'}, {sym:'/ɚ/',type:'vowel',word:'teacher',hint:'非重讀 R-colored vowel'},
+  {sym:'/eɪ/',type:'vowel',word:'day',hint:'雙母音'}, {sym:'/oʊ/',type:'vowel',word:'go',hint:'雙母音'},
+  {sym:'/aɪ/',type:'vowel',word:'my',hint:'雙母音'}, {sym:'/aʊ/',type:'vowel',word:'now',hint:'雙母音'},
+  {sym:'/ɔɪ/',type:'vowel',word:'boy',hint:'雙母音'}
+];
+const preQuizData = [
+  {q:'美式英文字母 A 的「字母名稱」IPA 是？',opts:['/æ/','/eɪ/','/ɑ/','/ə/'],ans:1,topic:'Alphabet names'},
+  {q:'美式英文字母 Z 的名稱通常是？',opts:['/zɛd/','/zi/','/zaɪ/','/zə/'],ans:1,topic:'Alphabet names'},
+  {q:'字母 C 的名稱 /si/ 是否代表 C 在所有單字都發 /s/？',opts:['是','否'],ans:1,topic:'Letter vs Sound'},
+  {q:'think 的 th 最接近哪個 IPA？',opts:['/ð/','/θ/','/s/','/t/'],ans:1,topic:'/θ/'},
+  {q:'this 的 th 最接近哪個 IPA？',opts:['/θ/','/ð/','/d/','/z/'],ans:1,topic:'/ð/'},
+  {q:'ship 的核心母音是？',opts:['/i/','/ɪ/','/ɛ/','/æ/'],ans:1,topic:'/i/ vs /ɪ/'},
+  {q:'sheep 的核心母音是？',opts:['/i/','/ɪ/','/u/','/ʊ/'],ans:0,topic:'/i/ vs /ɪ/'},
+  {q:'IPA 中 ˈ 通常代表什麼？',opts:['次重音','主要重音','長音','不發音'],ans:1,topic:'IPA notation'},
+  {q:'[ɾ] 在美式英語常見於哪類例子？',opts:['water / better','think / bath','ship / shoe','sing / song'],ans:0,topic:'Flap T'},
+  {q:'哪個敘述最正確？',opts:['字母名稱 IPA = 該字母固定發音','IPA 用來較直接描述聲音','每個英文字母只對應一個音','所有美式口音的母音完全相同'],ans:1,topic:'IPA concept'}
+];
+if(!state.preQuiz) state.preQuiz={answers:{},score:0,finished:false};
+
+function renderAlphabet(){
+  const box=document.getElementById('alphabetGrid'); if(!box)return;
+  box.innerHTML=alphabetData.map(x=>`<div class="letter-card"><div class="letter">${x.l}</div><div class="letter-ipa">${x.ipa}</div><button class="secondary alphabetSpeak" data-letter="${x.l}">🔊 字母</button><div class="tiny" style="margin-top:7px">${x.sounds}</div></div>`).join('');
+  box.querySelectorAll('.alphabetSpeak').forEach(b=>b.onclick=()=>speak(b.dataset.letter,{rate:.72}));
+}
+function renderIpaReference(type='all'){
+  const box=document.getElementById('ipaReferenceGrid'); if(!box)return;
+  const list=ipaReferenceData.filter(x=>type==='all'||x.type===type);
+  box.innerHTML=list.map(x=>`<div class="ipa-ref-card"><div class="symbol">${x.sym}</div><strong>${x.word}</strong><div class="tiny">${x.hint}</div><button class="secondary ipaRefSpeak" data-word="${x.word}" style="margin-top:7px">🔊 ${x.word}</button></div>`).join('');
+  box.querySelectorAll('.ipaRefSpeak').forEach(b=>b.onclick=()=>speak(b.dataset.word,{rate:.72}));
+}
+function renderPreQuiz(){
+  const box=document.getElementById('preQuizQuestions'); if(!box)return;
+  const rec=state.preQuiz||{answers:{},score:0,finished:false};
+  box.innerHTML=preQuizData.map((x,i)=>{
+    const answered=Object.prototype.hasOwnProperty.call(rec.answers,i), chosen=rec.answers[i], correct=chosen===x.ans;
+    return `<div class="unit-q" data-preqi="${i}"><strong>${i+1}. ${x.q}</strong>${x.opts.map((o,j)=>`<button class="choice preQuizChoice${answered?' answered':''}" data-v="${j}" ${answered?'disabled':''}>${String.fromCharCode(65+j)}. ${o}</button>`).join('')}<div class="feedback ${answered?(correct?'ok':'bad'):''}">${answered?(correct?'✓ 正確':`✗ 正解：${String.fromCharCode(65+x.ans)}. ${x.opts[x.ans]}`):''}</div></div>`;
+  }).join('');
+  box.querySelectorAll('.preQuizChoice:not([disabled])').forEach(btn=>btn.onclick=()=>answerPreQuiz(Number(btn.closest('.unit-q').dataset.preqi),Number(btn.dataset.v)));
+  updatePreQuizSummary();
+}
+function answerPreQuiz(qi,choice){
+  const data=preQuizData[qi],rec=state.preQuiz||{answers:{},score:0,finished:false};
+  if(Object.prototype.hasOwnProperty.call(rec.answers,qi))return;
+  rec.answers[qi]=choice;if(choice===data.ans){rec.score++;reduceWeak(data.topic)}else addWeak(data.topic);
+  rec.finished=Object.keys(rec.answers).length===10;state.preQuiz=rec;saveState();renderPreQuiz();
+}
+function updatePreQuizSummary(){
+  const rec=state.preQuiz||{answers:{},score:0,finished:false};const n=Object.keys(rec.answers).length;
+  const p=document.getElementById('preQuizProgress'),sum=document.getElementById('preQuizSummary');if(p)p.textContent=`已作答 ${n} / 10`;
+  if(sum)sum.innerHTML=rec.finished?`<div class="quiz-summary"><strong>Start Here 成績：${rec.score} / 10</strong><br>${rec.score>=8?'基礎辨識已足夠，可以進 Lesson 1。':'建議再快速看一次 A–Z 與 IPA 總表後重測。'}</div>`:'';
+}
+
+// ---------- IPA data ----------
+const phonemes=[
+{sym:'/p/',type:'consonant',word:'pack',spell:'p, pp',desc:'雙唇閉合後釋放，無聲。',pair:'pack / back'},
+{sym:'/b/',type:'consonant',word:'back',spell:'b, bb',desc:'雙唇閉合後釋放，有聲。',pair:'pack / back'},
+{sym:'/t/',type:'consonant',word:'ten',spell:'t, tt',desc:'舌尖/舌葉接近齒齦脊，無聲。',pair:'ten / den'},
+{sym:'/d/',type:'consonant',word:'den',spell:'d, dd',desc:'與 /t/ 類似但有聲。',pair:'ten / den'},
+{sym:'/k/',type:'consonant',word:'coat',spell:'c, k, ck, q(u)',desc:'舌後部接近軟顎，無聲。',pair:'coat / goat'},
+{sym:'/g/',type:'consonant',word:'goat',spell:'g, gg',desc:'與 /k/ 類似但有聲。',pair:'coat / goat'},
+{sym:'/f/',type:'consonant',word:'fan',spell:'f, ph, gh',desc:'上齒接觸下唇，無聲摩擦。',pair:'fan / van'},
+{sym:'/v/',type:'consonant',word:'van',spell:'v',desc:'上齒接觸下唇，有聲摩擦。',pair:'fan / van'},
+{sym:'/θ/',type:'consonant',word:'think',spell:'th',desc:'舌尖輕觸/略伸齒間，無聲。',pair:'think / sink'},
+{sym:'/ð/',type:'consonant',word:'this',spell:'th',desc:'與 /θ/ 類似但有聲。',pair:'then / den'},
+{sym:'/s/',type:'consonant',word:'sip',spell:'s, c',desc:'舌前形成狹窄氣道，無聲。',pair:'sip / zip'},
+{sym:'/z/',type:'consonant',word:'zip',spell:'z, s',desc:'與 /s/ 類似但有聲。',pair:'sip / zip'},
+{sym:'/ʃ/',type:'consonant',word:'ship',spell:'sh, ti, ci',desc:'舌前部後縮形成摩擦。',pair:'ship / sip'},
+{sym:'/ʒ/',type:'consonant',word:'measure',spell:'s, si',desc:'有聲 postalveolar fricative。',pair:'pressure / measure'},
+{sym:'/tʃ/',type:'consonant',word:'cheap',spell:'ch, tch',desc:'無聲 affricate。',pair:'cheap / jeep'},
+{sym:'/dʒ/',type:'consonant',word:'jeep',spell:'j, g, dg',desc:'有聲 affricate。',pair:'cheap / jeep'},
+{sym:'/m/',type:'consonant',word:'man',spell:'m, mm',desc:'雙唇閉合，氣流走鼻腔。',pair:'man / ban'},
+{sym:'/n/',type:'consonant',word:'no',spell:'n, nn',desc:'舌尖前方接觸，鼻音。',pair:'sin / sing'},
+{sym:'/ŋ/',type:'consonant',word:'sing',spell:'ng, n',desc:'舌後部抬起接近軟顎，鼻音。',pair:'sin / sing'},
+{sym:'/l/',type:'consonant',word:'light',spell:'l, ll',desc:'舌尖碰齒齦脊，氣流從側邊通過。',pair:'right / light'},
+{sym:'/ɹ/',type:'consonant',word:'right',spell:'r, rr',desc:'美式 R；舌尖通常不碰上顎。',pair:'right / light'},
+{sym:'/j/',type:'consonant',word:'yes',spell:'y',desc:'接近高前母音位置的 glide。',pair:'yes'},
+{sym:'/w/',type:'consonant',word:'west',spell:'w, wh',desc:'雙唇圓起，舌後部抬高。',pair:'vest / west'},
+{sym:'/h/',type:'consonant',word:'hat',spell:'h',desc:'聲門摩擦音。',pair:'hat'},
+{sym:'/i/',type:'vowel',word:'sheep',spell:'ee, ea, e',desc:'高前、較緊。',pair:'sheep / ship'},
+{sym:'/ɪ/',type:'vowel',word:'ship',spell:'i, y',desc:'稍低、較鬆的前母音。',pair:'sheep / ship'},
+{sym:'/ɛ/',type:'vowel',word:'bed',spell:'e, ea',desc:'中前母音。',pair:'bed / bad'},
+{sym:'/æ/',type:'vowel',word:'bad',spell:'a',desc:'低前、張口較大。',pair:'bed / bad'},
+{sym:'/ɑ/',type:'vowel',word:'hot',spell:'o, a',desc:'低後母音；美式方言有 cot-caught 差異。',pair:'hot'},
+{sym:'/ɔ/',type:'vowel',word:'thought',spell:'aw, au, ough',desc:'後圓唇母音；部分美式口音與 /ɑ/ 合流。',pair:'thought'},
+{sym:'/ʊ/',type:'vowel',word:'full',spell:'oo, u',desc:'高後、較鬆。',pair:'full / fool'},
+{sym:'/u/',type:'vowel',word:'fool',spell:'oo, u_e, ew',desc:'高後、圓唇。',pair:'full / fool'},
+{sym:'/ʌ/',type:'vowel',word:'cup',spell:'u, o',desc:'中央附近的重讀母音。',pair:'cup / cop'},
+{sym:'/ə/',type:'vowel',word:'about',spell:'many unstressed vowels',desc:'schwa；典型弱化母音。',pair:'about'},
+{sym:'/ɝ/',type:'vowel',word:'bird',spell:'er, ir, ur',desc:'重讀 R-colored vowel。',pair:'bird'},
+{sym:'/ɚ/',type:'vowel',word:'teacher',spell:'er, or',desc:'非重讀 R-colored vowel。',pair:'teacher'},
+{sym:'/eɪ/',type:'vowel',word:'day',spell:'a_e, ai, ay',desc:'雙母音，由較中前位置滑向高前。',pair:'day'},
+{sym:'/oʊ/',type:'vowel',word:'go',spell:'o_e, oa, ow',desc:'雙母音，由後中位置滑向高後。',pair:'go'},
+{sym:'/aɪ/',type:'vowel',word:'my',spell:'i_e, y, igh',desc:'雙母音。',pair:'my'},
+{sym:'/aʊ/',type:'vowel',word:'now',spell:'ou, ow',desc:'雙母音。',pair:'now'},
+{sym:'/ɔɪ/',type:'vowel',word:'boy',spell:'oi, oy',desc:'雙母音。',pair:'boy'}
+];
+function renderIPA(){
+  const f=document.getElementById('ipaFilter').value,q=document.getElementById('ipaSearch').value.trim().toLowerCase();
+  const list=phonemes.filter(x=>(f==='all'||x.type===f)&&(`${x.sym} ${x.word} ${x.spell} ${x.pair}`.toLowerCase().includes(q)));
+  document.getElementById('ipaGrid').innerHTML=list.map((x,i)=>`<div class="phoneme-card" data-sym="${x.sym.replaceAll('"','&quot;')}"><div class="bigipa">${x.sym}</div><strong>${x.word}</strong><div class="tiny">${x.spell}</div></div>`).join('');
+  document.querySelectorAll('.phoneme-card').forEach(c=>c.onclick=()=>showPhoneme(c.dataset.sym));
+}
+function showPhoneme(sym){
+  const x=phonemes.find(p=>p.sym===sym);if(!x)return;
+  document.getElementById('ipaTitle').innerHTML=`<span class="bigipa">${x.sym}</span> · ${x.word}`;
+  document.getElementById('ipaDetail').innerHTML=`<p><strong>口腔 / 語音提示：</strong>${x.desc}</p><p><strong>常見拼法：</strong>${x.spell}</p><p><strong>Contrast：</strong>${x.pair}</p><div class="row"><button class="primary" id="ipaSpeak">🔊 ${x.word}</button><button class="secondary" id="ipaPair">🔊 ${x.pair}</button><button class="secondary" id="ipaWeak">加入弱項</button></div>`;
+  document.getElementById('ipaSpeak').onclick=()=>speak(x.word);
+  document.getElementById('ipaPair').onclick=()=>speak(x.pair.replace('/',' '));
+  document.getElementById('ipaWeak').onclick=()=>addWeak(x.pair);
+}
+document.getElementById('ipaFilter').onchange=renderIPA;
+document.getElementById('ipaSearch').oninput=renderIPA;renderIPA();
+
+// ---------- Listening ----------
+const listeningItems=[
+{a:'sheep',b:'ship',topic:'/i/ vs /ɪ/',cat:'vowel'},
+{a:'fool',b:'full',topic:'/u/ vs /ʊ/',cat:'vowel'},
+{a:'bed',b:'bad',topic:'/ɛ/ vs /æ/',cat:'vowel'},
+{a:'cap',b:'cup',topic:'/æ/ vs /ʌ/',cat:'vowel'},
+{a:'right',b:'light',topic:'/ɹ/ vs /l/',cat:'consonant'},
+{a:'think',b:'sink',topic:'/θ/ vs /s/',cat:'consonant'},
+{a:'then',b:'den',topic:'/ð/ vs /d/',cat:'consonant'},
+{a:'vest',b:'west',topic:'/v/ vs /w/',cat:'consonant'},
+{a:'fan',b:'van',topic:'/f/ vs /v/',cat:'consonant'},
+{a:'sip',b:'zip',topic:'/s/ vs /z/',cat:'consonant'},
+{a:'cheap',b:'jeep',topic:'/tʃ/ vs /dʒ/',cat:'consonant'},
+{a:'sin',b:'sing',topic:'/n/ vs /ŋ/',cat:'consonant'}
+];
+let currentListen=null;
+function weightedPick(items){
+  const weights=items.map(x=>1+(state.weak[x.topic]||0)*2);
+  const total=weights.reduce((a,b)=>a+b,0);let r=Math.random()*total;
+  for(let i=0;i<items.length;i++){r-=weights[i];if(r<=0)return items[i]}return items[0];
+}
+function playListen(ans){
+  const n=Number(document.getElementById('listenRepeats').value||1);speak(ans,{repeats:n});
+}
+function newListen(){
+  let items=listeningItems;
+  const cat=document.getElementById('listenCategory').value;if(cat!=='all')items=items.filter(x=>x.cat===cat);
+  const base=weightedPick(items),answer=Math.random()<.5?base.a:base.b;
+  const difficulty=Number(document.getElementById('listenDifficulty').value);
+  let choices=[base.a,base.b];
+  if(difficulty===4){
+    const pool=[...new Set(listeningItems.flatMap(x=>[x.a,x.b]))].filter(x=>!choices.includes(x));
+    while(choices.length<4&&pool.length){const i=Math.floor(Math.random()*pool.length);choices.push(pool.splice(i,1)[0]);}
+  }
+  choices=choices.sort(()=>Math.random()-.5);
+  currentListen={base,answer};
+  document.getElementById('listenChoices').innerHTML=choices.map(x=>`<button class="choice listenChoice">${x}</button>`).join('');
+  document.querySelectorAll('.listenChoice').forEach(b=>b.onclick=()=>answerListen(b.textContent));
+  document.getElementById('listenReplay').disabled=false;
+  document.getElementById('listenFeedback').textContent='';
+  playListen(answer);
+}
+function answerListen(x){
+  if(!currentListen)return;
+  const ok=x===currentListen.answer,t=currentListen.base.topic;
+  state.listening.total++; if(ok){state.listening.correct++;state.listening.streak++;reduceWeak(t)}else{state.listening.streak=0;addWeak(t);}
+  state.listening.topics[t]=state.listening.topics[t]||{c:0,n:0};state.listening.topics[t].n++;if(ok)state.listening.topics[t].c++;
+  document.getElementById('listenFeedback').textContent=ok?'✓ 正確':`✗ 系統播放的是：${currentListen.answer}`;
+  document.getElementById('listenFeedback').className='feedback '+(ok?'ok':'bad');
+  currentListen=null;saveState();
+}
+document.getElementById('listenNew').onclick=newListen;
+document.getElementById('listenReplay').onclick=()=>{if(currentListen)playListen(currentListen.answer)};
+
+// ---------- Recording ----------
+let mediaRecorder=null,recChunks=[];
+function currentRecordText(){return document.getElementById('recordTarget').value}
+document.getElementById('recordModel').onclick=()=>speak(currentRecordText());
+document.getElementById('recordSlow').onclick=()=>speak(currentRecordText(),{rate:.62});
+document.getElementById('useRecordCustom').onclick=()=>{
+  const x=document.getElementById('recordCustom').value.trim();if(!x)return;
+  const sel=document.getElementById('recordTarget'),o=document.createElement('option');o.textContent=x;o.value=x;sel.appendChild(o);sel.value=x;
+};
+document.getElementById('recStart').onclick=async()=>{
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    recChunks=[];mediaRecorder=new MediaRecorder(stream);
+    mediaRecorder.ondataavailable=e=>{if(e.data.size)recChunks.push(e.data)};
+    mediaRecorder.onstop=()=>{
+      const blob=new Blob(recChunks,{type:'audio/webm'});const a=document.getElementById('recPlayback');
+      a.src=URL.createObjectURL(blob);a.style.display='block';document.getElementById('recStatus').textContent='完成。請先聽 model，再 A/B 比較。';
+      stream.getTracks().forEach(t=>t.stop());
+    };
+    mediaRecorder.start();document.getElementById('recStart').disabled=true;document.getElementById('recStop').disabled=false;document.getElementById('recStatus').textContent='錄音中…';
+  }catch(e){document.getElementById('recStatus').textContent='無法使用麥克風。請檢查權限，或用 localhost / Live Server 開啟。'}
+};
+document.getElementById('recStop').onclick=()=>{if(mediaRecorder&&mediaRecorder.state==='recording'){mediaRecorder.stop();document.getElementById('recStart').disabled=false;document.getElementById('recStop').disabled=true}};
+
+// ---------- ASR ----------
+let activeAsrTarget='';
+const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+function normalizeText(s){return s.toLowerCase().replace(/[^a-z0-9' ]/g,'').replace(/\s+/g,' ').trim()}
+function tokenSimilarity(a,b){
+  const A=normalizeText(a).split(' '),B=normalizeText(b).split(' ');if(!A[0]||!B[0])return 0;
+  let hit=0;const used=new Set();A.forEach(x=>{const i=B.findIndex((y,j)=>y===x&&!used.has(j));if(i>=0){used.add(i);hit++}});
+  return Math.round(100*hit/Math.max(A.length,B.length));
+}
+function getAsrTarget(){return activeAsrTarget||document.getElementById('asrTarget').value}
+document.getElementById('asrModel').onclick=()=>speak(getAsrTarget());
+document.getElementById('useAsrCustom').onclick=()=>{const x=document.getElementById('asrCustom').value.trim();if(x){activeAsrTarget=x;document.getElementById('asrStatus').textContent=`自訂目標：${x}`}};
+document.getElementById('asrTarget').onchange=()=>activeAsrTarget='';
+document.getElementById('asrStart').onclick=()=>{
+  const target=getAsrTarget();
+  if(!SpeechRecognition){document.getElementById('asrStatus').innerHTML='<span class="bad">此瀏覽器不支援 Web Speech Recognition。建議使用最新版 Chrome/Edge。</span>';return;}
+  const r=new SpeechRecognition();r.lang='en-US';r.interimResults=false;r.maxAlternatives=3;
+  document.getElementById('asrStatus').textContent='正在聽…請說：'+target;
+  r.onresult=e=>{
+    const alts=[...e.results[0]].map(x=>({t:x.transcript,c:x.confidence}));
+    const best=alts[0]?.t||'';const exact=normalizeText(best)===normalizeText(target);const sim=tokenSimilarity(best,target);
+    state.asr.total++;if(exact)state.asr.success++;
+    if(exact)reduceWeak('ASR: '+target);else addWeak('ASR: '+target);
+    document.getElementById('asrStatus').innerHTML=exact?'<span class="ok">✓ 系統辨識到目標</span>':'<span class="warn">系統沒有完全辨識成目標</span>';
+    document.getElementById('asrResult').innerHTML=`<p><strong>Target:</strong> ${target}</p><p><strong>Recognized:</strong> ${best}</p><p><strong>Transcript token match:</strong> ${sim}%</p><details><summary>其他候選</summary>${alts.map(x=>`<div>${x.t}${x.c?` · confidence ${(x.c*100).toFixed(0)}%`:''}</div>`).join('')}</details>`;
+    saveState();
+  };
+  r.onerror=e=>document.getElementById('asrStatus').innerHTML=`<span class="bad">辨識錯誤：${e.error}</span>`;
+  r.start();
+};
+
+// ---------- Custom ----------
+document.getElementById('customSpeak').onclick=()=>{const x=document.getElementById('customText').value.trim();if(x)speak(x)};
+document.getElementById('customSlow').onclick=()=>{const x=document.getElementById('customText').value.trim();if(x)speak(x,{rate:.62})};
+document.getElementById('customChunk').onclick=()=>{
+  const x=document.getElementById('customText').value.trim();
+  document.getElementById('customChunks').innerHTML=x?x.split(/\s+/).map(w=>`<span class="chip">${w}</span>`).join(''):'';
+};
+
+// ---------- Review ----------
+let currentReviewTopic=null;
+function dueTopics(){
+  const now=Date.now();
+  return Object.entries(state.review).filter(([t,v])=>!v.due||v.due<=now).map(([t])=>t)
+}
+function renderReview(){
+  const due=dueTopics();const topics=due.length?due:Object.keys(state.weak).sort((a,b)=>(state.weak[b]||0)-(state.weak[a]||0));
+  currentReviewTopic=topics[0]||null;
+  const el=document.getElementById('reviewCard');
+  if(!currentReviewTopic){el.innerHTML='<span class="small">目前沒有待複習項目。先做 Listening 或 Recognition。</span>';return;}
+  const li=listeningItems.find(x=>x.topic===currentReviewTopic);
+  el.innerHTML=`<div class="practice-word">${currentReviewTopic}</div><p class="small">先回想差異，再播放例子。</p>${li?`<button class="speak" id="reviewSpeak">🔊 ${li.a} / ${li.b}</button>`:''}`;
+  if(li)document.getElementById('reviewSpeak').onclick=()=>speak(`${li.a} ${li.b}`);
+}
+document.querySelectorAll('.reviewRate').forEach(b=>b.onclick=()=>{
+  if(!currentReviewTopic)return;
+  const q=b.dataset.q,card=state.review[currentReviewTopic]||{interval:0,reps:0};
+  const day=86400000;
+  if(q==='again'){card.interval=0;card.due=Date.now()+10*60*1000;card.reps=0;addWeak(currentReviewTopic)}
+  if(q==='hard'){card.interval=Math.max(1,Math.round((card.interval||1)*1.2));card.due=Date.now()+card.interval*day}
+  if(q==='good'){card.interval=card.reps===0?1:Math.max(2,Math.round((card.interval||1)*2.2));card.due=Date.now()+card.interval*day;card.reps++;reduceWeak(currentReviewTopic)}
+  if(q==='easy'){card.interval=card.reps===0?3:Math.max(4,Math.round((card.interval||1)*3));card.due=Date.now()+card.interval*day;card.reps++;reduceWeak(currentReviewTopic)}
+  state.review[currentReviewTopic]=card;saveState();renderReview();
+});
+
+// ---------- Daily timer ----------
+let dailySecs=600,dailyInt=null,dailyRunning=false;
+function renderDaily(){
+  const m=Math.floor(dailySecs/60),s=dailySecs%60;document.getElementById('dailyTimer').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  const elapsed=600-dailySecs;let txt='3 分鐘：Adaptive Listening';
+  if(elapsed>=180)txt='2 分鐘：IPA 弱項';
+  if(elapsed>=300)txt='2 分鐘：Shadowing / Recording';
+  if(elapsed>=420)txt='2 分鐘：Recognition Lab';
+  if(elapsed>=540)txt='1 分鐘：查看弱項報告';
+  document.getElementById('dailyTask').textContent=txt;
+}
+document.getElementById('dailyStart').onclick=()=>{
+  if(dailyRunning)return;dailyRunning=true;document.getElementById('dailyPause').disabled=false;
+  dailyInt=setInterval(()=>{dailySecs--;renderDaily();if(dailySecs<=0){clearInterval(dailyInt);dailyRunning=false;alert('今日 10 分鐘完成。')}} ,1000)
+};
+document.getElementById('dailyPause').onclick=()=>{clearInterval(dailyInt);dailyRunning=false;document.getElementById('dailyPause').disabled=true};
+document.getElementById('dailyReset').onclick=()=>{clearInterval(dailyInt);dailyRunning=false;dailySecs=600;renderDaily()};renderDaily();
+
+// ---------- Report ----------
+function renderReport(){
+  document.getElementById('repListenN').textContent=state.listening.total||0;
+  document.getElementById('repAsrN').textContent=state.asr.total||0;
+  const weakEntries=Object.entries(state.weak).filter(([k,v])=>v>0).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('repWeakN').textContent=weakEntries.length;
+  const pre=state.preQuiz;
+  const preRow=`<tr><td>Start Here · A–Z + IPA</td><td>${pre&&pre.finished?pre.score+'/10':'—'}</td><td>${pre&&pre.finished?'完成':'未完成'}</td></tr>`;
+  const unitRows=preRow+COURSE_IDS.map((id,i)=>{const r=state.unitQuiz?.[id];return `<tr><td>Lesson ${i+1}</td><td>${r&&r.finished?r.score+'/10':'—'}</td><td>${r&&r.finished?'完成':'未完成'}</td></tr>`}).join('');
+  const uq=document.getElementById('unitQuizStats'); if(uq) uq.innerHTML=unitRows;
+  const rows=Object.entries(state.listening.topics||{}).sort((a,b)=>((a[1].c/a[1].n)-(b[1].c/b[1].n))).map(([t,v])=>`<tr><td>${t}</td><td>${v.c}</td><td>${v.n}</td><td>${pct(v.c,v.n)}%</td></tr>`).join('');
+  document.getElementById('topicStats').innerHTML=rows||'<tr><td colspan="4" class="small">尚無聽辨資料。</td></tr>';
+  document.getElementById('reportWeak').innerHTML=weakEntries.length?weakEntries.map(([t,n])=>`<span class="weak-chip">${t} × ${n}</span>`).join(''):'<span class="small">目前沒有記錄到弱項。</span>';
+}
+document.getElementById('clearStats').onclick=()=>{if(confirm('清除聽辨、Recognition 與弱項統計？')){state.listening=structuredClone(defaultState.listening);state.asr=structuredClone(defaultState.asr);state.weak={};state.review={};saveState();renderReport()}};
+document.getElementById('downloadCsv').onclick=()=>{
+  const lines=[['topic','correct','total','accuracy']];
+  for(const [t,v] of Object.entries(state.listening.topics||{}))lines.push([t,v.c,v.n,pct(v.c,v.n)]);
+  const csv=lines.map(r=>r.map(x=>`"${String(x).replaceAll('"','""')}"`).join(',')).join('\n');
+  downloadBlob(csv,'pronunciation_report.csv','text/csv;charset=utf-8');
+};
+
+// ---------- Export / Import ----------
+function downloadBlob(content,name,type){
+  const blob=content instanceof Blob?content:new Blob([content],{type});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
+}
+document.getElementById('exportJson').onclick=()=>downloadBlob(JSON.stringify(state,null,2),'pronunciation_lab_progress.json','application/json');
+document.getElementById('importJson').onchange=async e=>{
+  const f=e.target.files[0];if(!f)return;
+  try{const x=JSON.parse(await f.text());state=Object.assign({},structuredClone(defaultState),x);saveState();applyTheme();applyUISettings();renderCompatibility();alert('匯入完成');}catch(err){alert('JSON 格式無法讀取');}
+};
+document.getElementById('resetAll').onclick=()=>{if(confirm('確定要重設所有課程、統計與設定？')){localStorage.removeItem('aePronLabState');state=structuredClone(defaultState);location.reload()}};
+
+
+function unitQuizAverage(){
+  const vals=COURSE_IDS.map(id=>state.unitQuiz?.[id]).filter(x=>x&&x.finished);
+  if(!vals.length)return null;
+  return Math.round(vals.reduce((s,x)=>s+x.score,0)/(vals.length*10)*100);
+}
+
+// ---------- Dashboard ----------
+function updateAll(){
+  const coursePct=Math.round((state.done.length/COURSE_IDS.length)*100);
+  document.getElementById('progressText').textContent=coursePct+'%';document.getElementById('progressBar').style.width=coursePct+'%';document.getElementById('dashProgress').textContent=coursePct+'%';
+  document.getElementById('dashListening').textContent=state.listening.total?pct(state.listening.correct,state.listening.total)+'%':'—';
+  document.getElementById('dashASR').textContent=state.asr.total?pct(state.asr.success,state.asr.total)+'%':'—';
+  const weak=Object.entries(state.weak).filter(([k,v])=>v>0).sort((a,b)=>b[1]-a[1]);document.getElementById('dashWeak').textContent=weak.length;
+  document.getElementById('priorityBox').innerHTML=weak.length?weak.slice(0,6).map(([t,n])=>`<span class="weak-chip">${t} × ${n}</span>`).join(''):'<span class="chip">先完成 Listening Lab 建立個人弱項</span>';
+  navButtons.forEach(b=>{if(!COURSE_IDS.includes(b.dataset.view))return;b.textContent=b.textContent.replace(/^✓\s*/,'');if(state.done.includes(b.dataset.view))b.textContent='✓ '+b.textContent});
+  document.getElementById('listenKpi').textContent=`${state.listening.correct} / ${state.listening.total}`;
+  document.getElementById('listenStreak').textContent=`streak ${state.listening.streak}`;
+  renderReport();
+}
+updateAll();applyTheme();applyUISettings();renderCompatibility();
+
+// ---------- Keyboard ----------
+document.addEventListener('keydown',e=>{
+  const active=document.querySelector('.view.active')?.id;
+  if(active==='listenLab' && e.code==='Space'){e.preventDefault();if(currentListen)playListen(currentListen.answer)}
+  if(active==='listenLab' && e.key.toLowerCase()==='n')newListen();
+});
+
+
+// ---------- Lesson reinforcement: 5+ examples per learning point + 10-question unit quizzes ----------
+const lessonExampleSets = {"l1": [{"title": "字母 a：至少 5 種經典讀法", "note": "同一字母不等於固定音值。", "items": ["cat /kæt/", "cake /keɪk/", "father /ˈfɑðɚ/", "about /əˈbaʊt/", "call /kɔl/"]}, {"title": "音 /f/：至少 5 種典型拼字環境", "items": ["fan", "coffee", "phone", "laugh", "enough"]}, {"title": "/ʃ/：5 個經典例字", "items": ["ship", "she", "shop", "fish", "wash"]}, {"title": "/dʒ/：5 個經典例字", "items": ["job", "jeep", "giant", "bridge", "age"]}], "l2": [{"title": "/p/ vs /b/：5 組", "items": ["pack / back", "pat / bat", "cap / cab", "rope / robe", "rip / rib"]}, {"title": "/t/ vs /d/：5 組", "items": ["ten / den", "tie / die", "town / down", "bet / bed", "coat / code"]}, {"title": "/k/ vs /g/：5 組", "items": ["coat / goat", "cap / gap", "cold / gold", "back / bag", "pick / pig"]}, {"title": "/f/ vs /v/：5 組", "items": ["fan / van", "fine / vine", "safe / save", "leaf / leave", "ferry / very"]}, {"title": "/s/ vs /z/：5 組", "items": ["sip / zip", "seal / zeal", "bus / buzz", "rice / rise", "face / phase"]}, {"title": "/θ/：5 個經典例字", "items": ["think", "thick", "bath", "teeth", "author"]}, {"title": "/ð/：5 個經典例字", "items": ["this", "that", "these", "mother", "breathe"]}, {"title": "/ʃ/ vs /ʒ/：各 5 個代表字", "items": ["ship / measure", "shoe / vision", "wash / beige", "pressure / usual", "nation / garage"]}, {"title": "/tʃ/ vs /dʒ/：5 組代表字", "items": ["cheap / jeep", "choke / joke", "chin / gin", "batch / badge", "rich / ridge"]}, {"title": "/ɹ/ vs /l/：5 組", "items": ["right / light", "road / load", "read / lead", "rock / lock", "rice / lice"]}, {"title": "/v/ vs /w/：5 組", "items": ["vest / west", "vine / wine", "veil / whale", "verse / worse", "vet / wet"]}, {"title": "/n/ vs /ŋ/：5 組／近似對比", "items": ["sin / sing", "ran / rang", "win / wing", "thin / thing", "ban / bang"]}], "l3": [{"title": "/i/：5 個經典例字", "items": ["sheep", "see", "green", "team", "key"]}, {"title": "/ɪ/：5 個經典例字", "items": ["ship", "sit", "live", "busy", "women"]}, {"title": "/ɛ/：5 個經典例字", "items": ["bed", "head", "said", "friend", "many"]}, {"title": "/æ/：5 個經典例字", "items": ["bad", "cat", "hand", "black", "map"]}, {"title": "/ɑ/：5 個 General American 經典例字", "items": ["hot", "father", "not", "rock", "stop"]}, {"title": "/ʊ/：5 個經典例字", "items": ["full", "book", "look", "good", "put"]}, {"title": "/u/：5 個經典例字", "items": ["fool", "food", "blue", "two", "move"]}, {"title": "/ʌ/：5 個經典例字", "items": ["cup", "luck", "love", "son", "enough"]}, {"title": "/ə/ Schwa：5 個經典例字", "items": ["about", "ago", "support", "banana", "sofa"]}, {"title": "/ɝ/：5 個美式 R-colored 例字", "items": ["bird", "word", "turn", "learn", "first"]}, {"title": "/eɪ/：5 個例字", "items": ["day", "rain", "cake", "eight", "break"]}, {"title": "/oʊ/：5 個例字", "items": ["go", "home", "boat", "show", "open"]}, {"title": "/aɪ/：5 個例字", "items": ["my", "time", "night", "find", "pie"]}, {"title": "/aʊ/：5 個例字", "items": ["now", "out", "house", "down", "loud"]}, {"title": "/ɔɪ/：5 個例字", "items": ["boy", "coin", "choice", "toy", "voice"]}, {"title": "三組核心 Minimal Pairs：每組 5 對", "items": ["sheep / ship", "leave / live", "seat / sit", "feel / fill", "beat / bit"]}], "l4": [{"title": "Schwa /ə/：弱化母音", "items": ["about", "ago", "support", "banana", "sofa"]}, {"title": "Flap T [ɾ]：典型美式環境", "items": ["water", "better", "city", "pretty", "meeting"]}, {"title": "Linking：字與字自然連接", "items": ["pick it up", "turn it on", "take it out", "read it again", "move it over"]}, {"title": "Function-word reduction", "items": ["want to", "going to", "a cup of tea", "bread and butter", "can you help me"]}], "l5": [{"title": "/i/ vs /ɪ/ 聽辨：5 組", "items": ["sheep / ship", "leave / live", "seat / sit", "feel / fill", "beat / bit"]}, {"title": "/u/ vs /ʊ/ 聽辨：5 組", "items": ["fool / full", "pool / pull", "Luke / look", "food / foot", "suit / soot"]}, {"title": "/ɛ/ vs /æ/ 聽辨：5 組", "items": ["bed / bad", "men / man", "pen / pan", "said / sad", "lend / land"]}, {"title": "子音聽辨：5 組高價值對立", "items": ["right / light", "think / sink", "then / den", "vest / west", "sin / sing"]}], "l6": [{"title": "CVC：5 個經典短母音例字", "items": ["cat", "bed", "sit", "hot", "cup"]}, {"title": "Silent-e：5 組", "items": ["cap / cape", "kit / kite", "hop / hope", "cub / cube", "pet / Pete"]}, {"title": "ai/ay：5 個例字", "items": ["rain", "train", "mail", "day", "play"]}, {"title": "ee/ea → /i/：5 個常見例字", "items": ["see", "green", "meet", "team", "eat"]}, {"title": "oa/ow → /oʊ/：5 個例字", "items": ["boat", "road", "coat", "show", "snow"]}, {"title": "oi/oy → /ɔɪ/：5 個例字", "items": ["coin", "point", "voice", "boy", "toy"]}, {"title": "ou/ow → /aʊ/：5 個例字", "items": ["out", "house", "loud", "now", "town"]}, {"title": "Soft c：5 個例字", "items": ["city", "cent", "cycle", "face", "cell"]}, {"title": "Soft g：5 個例字", "items": ["giant", "gym", "gentle", "age", "magic"]}], "l7": [{"title": "-tion → /ʃən/：5 個經典例字", "items": ["nation", "station", "action", "information", "education"]}, {"title": "-sion：5 個經典例字", "items": ["vision", "decision", "television", "discussion", "permission"]}, {"title": "-ed → /t/：5 個例字", "items": ["worked", "washed", "kissed", "helped", "laughed"]}, {"title": "-ed → /d/：5 個例字", "items": ["played", "cleaned", "called", "loved", "opened"]}, {"title": "-ed → /ɪd/：5 個例字", "items": ["wanted", "needed", "started", "ended", "visited"]}, {"title": "複數 / 第三人稱 -s → /s/：5 個", "items": ["cats", "books", "cups", "laughs", "stops"]}, {"title": "-s → /z/：5 個", "items": ["dogs", "plays", "runs", "calls", "lives"]}, {"title": "-es → /ɪz/：5 個", "items": ["buses", "watches", "roses", "judges", "houses"]}, {"title": "-ic 與 stress：5 個", "items": ["graphic", "specific", "historic", "economic", "photographic"]}, {"title": "-ity 與 stress：5 個", "items": ["ability", "electricity", "activity", "reality", "security"]}], "l8": [{"title": "Minimal-pair shadowing：5 組", "items": ["ship — sheep", "full — fool", "bed — bad", "right — light", "think — sink"]}, {"title": "Linking 短句：5 句", "items": ["Pick it up.", "Turn it on.", "Take it out.", "Read it again.", "Move it over."]}, {"title": "Weak forms / rhythm：5 句", "items": ["I want to go.", "Can you help me?", "Give it to her.", "I have to leave.", "What do you mean?"]}, {"title": "Flap T shadowing：5 個", "items": ["water", "better", "city", "pretty", "meeting"]}], "l9": [{"title": "Recognition：母音最小對立 5 組", "items": ["ship / sheep", "full / fool", "bed / bad", "cap / cup", "sit / seat"]}, {"title": "Recognition：子音最小對立 5 組", "items": ["right / light", "think / sink", "then / den", "vest / west", "sin / sing"]}, {"title": "Recognition：Flap T 5 個", "items": ["water", "better", "city", "pretty", "meeting"]}, {"title": "Recognition：短句 5 句", "items": ["Pick it up.", "Turn it on.", "I want to go.", "Can you help me?", "What do you mean?"]}], "l10": [{"title": "Final Review：母音 5 組", "items": ["sheep / ship", "fool / full", "bed / bad", "cap / cup", "day / now"]}, {"title": "Final Review：子音 5 組", "items": ["right / light", "think / sink", "vest / west", "fan / van", "sin / sing"]}, {"title": "Final Review：Connected Speech 5 個", "items": ["about /ə/", "water [ɾ]", "Pick it up.", "want to", "bread and butter"]}, {"title": "Final Review：Suffix 5 個", "items": ["nation /ʃən/", "vision /ʒən/", "worked /t/", "played /d/", "wanted /ɪd/"]}]};
+const unitQuizData = {"l1": [{"q": "cat 的 a 在此字中最接近哪個 IPA？", "opts": ["/æ/", "/eɪ/", "/ə/", "/ɑ/"], "ans": 0, "topic": "Letter vs Sound"}, {"q": "cake 的 a 最接近哪個音？", "opts": ["/æ/", "/eɪ/", "/ɪ/", "/ʌ/"], "ans": 1, "topic": "Letter vs Sound"}, {"q": "about 第一個 a 通常弱化成：", "opts": ["/æ/", "/ɑ/", "/ə/", "/eɪ/"], "ans": 2, "topic": "Schwa"}, {"q": "phone 的 ph 通常代表：", "opts": ["/p/", "/f/", "/h/", "/v/"], "ans": 1, "topic": "Grapheme mapping"}, {"q": "laugh 結尾 gh 在此字中通常代表：", "opts": ["/g/", "/h/", "/f/", "不發音"], "ans": 2, "topic": "Grapheme mapping"}, {"q": "ship 的 sh 是：", "opts": ["/s/", "/ʃ/", "/tʃ/", "/ʒ/"], "ans": 1, "topic": "/ʃ/"}, {"q": "IPA 的主要用途是：", "opts": ["記錄字母名稱", "描述語音", "標示文法", "標示詞源"], "ans": 1, "topic": "IPA concept"}, {"q": "哪個敘述正確？", "opts": ["一個字母只會有一個音", "一個音只會有一種拼法", "拼字與聲音不是一對一", "IPA 與英文字母完全相同"], "ans": 2, "topic": "Letter vs Sound"}, {"q": "yes 開頭的 IPA /j/ 對應哪個聲音？", "opts": ["英文字母 J 的 /dʒ/", "yes 的 y 音", "/ʒ/", "/ɹ/"], "ans": 1, "topic": "IPA concept"}, {"q": "job 開頭常是：", "opts": ["/j/", "/ʃ/", "/dʒ/", "/tʃ/"], "ans": 2, "topic": "IPA concept"}], "l2": [{"q": "/p/ 和 /b/ 最主要的對比之一是：", "opts": ["舌位前後", "voicing", "母音長度", "鼻化"], "ans": 1, "topic": "Voicing"}, {"q": "/f/ 和 /v/ 的發音位置大致相同，差別主要是：", "opts": ["聲帶振動", "舌頭是否伸出", "是否圓唇", "是否鼻音"], "ans": 0, "topic": "/f/ vs /v/"}, {"q": "think 開頭是：", "opts": ["/s/", "/θ/", "/ð/", "/t/"], "ans": 1, "topic": "/θ/ vs /s/"}, {"q": "this 開頭通常是：", "opts": ["/θ/", "/ð/", "/d/", "/z/"], "ans": 1, "topic": "/ð/ vs /d/"}, {"q": "right 與 light 的主要對立是：", "opts": ["/ɹ/ vs /l/", "/r/ vs /n/", "/w/ vs /l/", "/t/ vs /d/"], "ans": 0, "topic": "/ɹ/ vs /l/"}, {"q": "/v/ 發音時通常：", "opts": ["雙唇完全閉合", "上齒接觸下唇", "舌尖伸出齒間", "舌後部接軟顎"], "ans": 1, "topic": "/v/ vs /w/"}, {"q": "/w/ 發音時通常：", "opts": ["雙唇圓起", "上齒咬下唇", "舌尖碰齒齦", "完全不動嘴唇"], "ans": 0, "topic": "/v/ vs /w/"}, {"q": "sing 結尾 ng 通常是：", "opts": ["/n/", "/g/", "/ŋ/", "/ŋg/ 一定如此"], "ans": 2, "topic": "/n/ vs /ŋ/"}, {"q": "cheap 與 jeep 的主要對立是：", "opts": ["/ʃ/ vs /ʒ/", "/tʃ/ vs /dʒ/", "/s/ vs /z/", "/k/ vs /g/"], "ans": 1, "topic": "Affricates"}, {"q": "哪一組是一對典型清濁對應？", "opts": ["/m/ 與 /n/", "/l/ 與 /ɹ/", "/s/ 與 /z/", "/h/ 與 /w/"], "ans": 2, "topic": "Voicing"}], "l3": [{"q": "sheep 的核心母音是：", "opts": ["/ɪ/", "/i/", "/ɛ/", "/æ/"], "ans": 1, "topic": "/i/ vs /ɪ/"}, {"q": "ship 的核心母音是：", "opts": ["/i/", "/ɪ/", "/u/", "/ʊ/"], "ans": 1, "topic": "/i/ vs /ɪ/"}, {"q": "full 的母音通常是：", "opts": ["/u/", "/ʊ/", "/ʌ/", "/ɑ/"], "ans": 1, "topic": "/u/ vs /ʊ/"}, {"q": "fool 的母音通常是：", "opts": ["/u/", "/ʊ/", "/ɔ/", "/ə/"], "ans": 0, "topic": "/u/ vs /ʊ/"}, {"q": "bed 的母音通常是：", "opts": ["/ɛ/", "/æ/", "/ɪ/", "/eɪ/"], "ans": 0, "topic": "/ɛ/ vs /æ/"}, {"q": "bad 的母音通常是：", "opts": ["/ɛ/", "/æ/", "/ɑ/", "/ʌ/"], "ans": 1, "topic": "/ɛ/ vs /æ/"}, {"q": "day 的雙母音通常是：", "opts": ["/aɪ/", "/eɪ/", "/oʊ/", "/ɔɪ/"], "ans": 1, "topic": "Diphthongs"}, {"q": "go 的雙母音在 General American 常標為：", "opts": ["/oʊ/", "/aʊ/", "/u/", "/ɔɪ/"], "ans": 0, "topic": "Diphthongs"}, {"q": "now 的雙母音是：", "opts": ["/aɪ/", "/aʊ/", "/eɪ/", "/oʊ/"], "ans": 1, "topic": "Diphthongs"}, {"q": "boy 的雙母音是：", "opts": ["/ɔɪ/", "/aɪ/", "/aʊ/", "/eɪ/"], "ans": 0, "topic": "Diphthongs"}], "l4": [{"q": "about 第一音節常出現：", "opts": ["/æ/", "schwa /ə/", "/eɪ/", "/i/"], "ans": 1, "topic": "Schwa"}, {"q": "Flap T 常見於哪個字？", "opts": ["water", "think", "ship", "fan"], "ans": 0, "topic": "Flap T"}, {"q": "美式 water 的 /t/ 常可實現為：", "opts": ["[ɾ]", "[θ]", "[ʃ]", "[ŋ]"], "ans": 0, "topic": "Flap T"}, {"q": "pick it up 最值得注意的是：", "opts": ["linking", "鼻化", "silent-e", "拼字改變"], "ans": 0, "topic": "Linking"}, {"q": "function words 在自然口語中常：", "opts": ["每個都重讀", "弱化", "全部省略", "變成鼻音"], "ans": 1, "topic": "Reduction"}, {"q": "General American 通常屬於：", "opts": ["non-rhotic", "rhotic", "沒有 /r/", "只句首發 r"], "ans": 1, "topic": "Rhotic R"}, {"q": "computer 的自然發音重點是：", "opts": ["每音節同強度", "有明顯 stress 與弱化", "所有母音都完整", "完全沒有 schwa"], "ans": 1, "topic": "Stress"}, {"q": "bread and butter 中 and 常可能：", "opts": ["特別重讀", "弱化", "變成 /θ/", "完全固定完整發音"], "ans": 1, "topic": "Reduction"}, {"q": "turn it on 的自然口語會強調：", "opts": ["字與字完全分開", "linking", "每個 t 都爆破很強", "每個母音都拉長"], "ans": 1, "topic": "Linking"}, {"q": "connected speech 的主要目標之一是：", "opts": ["逐字孤立朗讀", "建立自然節奏與連接", "消除所有口音", "把所有字都弱化"], "ans": 1, "topic": "Connected Speech"}], "l5": [{"q": "minimal pair 的用途是：", "opts": ["比較只差一個關鍵音的詞", "背拼字", "練文法", "練翻譯"], "ans": 0, "topic": "Minimal pairs"}, {"q": "sheep/ship 主要訓練：", "opts": ["/i/ vs /ɪ/", "/s/ vs /ʃ/", "/p/ vs /b/", "/l/ vs /ɹ/"], "ans": 0, "topic": "/i/ vs /ɪ/"}, {"q": "right/light 主要訓練：", "opts": ["/v/ vs /w/", "/ɹ/ vs /l/", "/θ/ vs /s/", "/n/ vs /ŋ/"], "ans": 1, "topic": "/ɹ/ vs /l/"}, {"q": "think/sink 主要訓練：", "opts": ["/θ/ vs /s/", "/ð/ vs /d/", "/t/ vs /d/", "/f/ vs /v/"], "ans": 0, "topic": "/θ/ vs /s/"}, {"q": "vest/west 主要訓練：", "opts": ["/f/ vs /v/", "/v/ vs /w/", "/b/ vs /p/", "/s/ vs /z/"], "ans": 1, "topic": "/v/ vs /w/"}, {"q": "有效聽辨訓練通常先：", "opts": ["看答案再聽", "先聽再判斷", "只看 IPA", "只背中文"], "ans": 1, "topic": "Listening method"}, {"q": "答錯後最有價值的做法是：", "opts": ["忽略", "記錄 contrast 並重複練習", "只提高音量", "改背拼字"], "ans": 1, "topic": "Listening method"}, {"q": "HVPT 的核心特徵之一是：", "opts": ["只聽同一個人", "使用較多語音變異", "只看文字", "不做辨音"], "ans": 1, "topic": "Listening method"}, {"q": "聽辨達成穩定後下一步應：", "opts": ["完全停止聽力", "加入 production", "只做文法", "只背 IPA"], "ans": 1, "topic": "Perception-production"}, {"q": "本課訓練的主要能力是：", "opts": ["phonemic identification", "作文", "語法分析", "詞源學"], "ans": 0, "topic": "Listening method"}], "l6": [{"q": "CVC 的 cat 中 a 常是：", "opts": ["/æ/", "/eɪ/", "/ə/", "/i/"], "ans": 0, "topic": "CVC"}, {"q": "cap → cape 的變化屬於：", "opts": ["silent-e / VCe", "-tion", "flap T", "schwa"], "ans": 0, "topic": "Silent-e"}, {"q": "kit → kite 通常使 i 從 /ɪ/ 轉向：", "opts": ["/i/", "/aɪ/", "/eɪ/", "/ɔɪ/"], "ans": 1, "topic": "Silent-e"}, {"q": "rain 的 ai 常是：", "opts": ["/eɪ/", "/i/", "/aʊ/", "/ʊ/"], "ans": 0, "topic": "Vowel teams"}, {"q": "see 的 ee 常是：", "opts": ["/ɪ/", "/i/", "/ɛ/", "/eɪ/"], "ans": 1, "topic": "Vowel teams"}, {"q": "boat 的 oa 常是：", "opts": ["/oʊ/", "/aʊ/", "/ɔɪ/", "/ɑ/"], "ans": 0, "topic": "Vowel teams"}, {"q": "coin 的 oi 常是：", "opts": ["/eɪ/", "/ɔɪ/", "/oʊ/", "/aɪ/"], "ans": 1, "topic": "Vowel teams"}, {"q": "city 開頭 c 常是：", "opts": ["/k/", "/s/", "/tʃ/", "/g/"], "ans": 1, "topic": "Soft c/g"}, {"q": "giant 開頭 g 常是：", "opts": ["/g/", "/dʒ/", "/ʒ/", "/k/"], "ans": 1, "topic": "Soft c/g"}, {"q": "看到陌生長字較好的第一步是：", "opts": ["逐字母念", "先找 syllable/chunks/stress", "直接猜中文", "跳過母音"], "ans": 1, "topic": "Decoding strategy"}], "l7": [{"q": "nation 的 -tion 常讀：", "opts": ["/ʃən/", "/tiɑn/", "/tʃən/", "/ʒən/"], "ans": 0, "topic": "-tion"}, {"q": "vision 的 -sion 常見：", "opts": ["/ʒən/", "/eɪʃən/", "/tɪən/", "/sɪon/"], "ans": 0, "topic": "-sion"}, {"q": "worked 的 -ed 是：", "opts": ["/t/", "/d/", "/ɪd/", "不發音"], "ans": 0, "topic": "-ed /t/"}, {"q": "played 的 -ed 是：", "opts": ["/t/", "/d/", "/ɪd/", "/əd/"], "ans": 1, "topic": "-ed /d/"}, {"q": "wanted 的 -ed 是：", "opts": ["/t/", "/d/", "/ɪd/", "/i/"], "ans": 2, "topic": "-ed /ɪd/"}, {"q": "cats 的 -s 通常是：", "opts": ["/s/", "/z/", "/ɪz/", "/ʃ/"], "ans": 0, "topic": "-s ending"}, {"q": "dogs 的 -s 通常是：", "opts": ["/s/", "/z/", "/ɪz/", "/dʒ/"], "ans": 1, "topic": "-s ending"}, {"q": "buses 的 -es 通常是：", "opts": ["/s/", "/z/", "/ɪz/", "不發音"], "ans": 2, "topic": "-s ending"}, {"q": "-ic 常會：", "opts": ["完全不影響 stress", "與 stress pattern 有關", "把所有母音變 /u/", "刪除前音節"], "ans": 1, "topic": "Stress suffix"}, {"q": "-ity 常見效果是：", "opts": ["可能改變 stress pattern", "永遠不改重音", "只改拼字不改聲音", "把 r 刪除"], "ans": 0, "topic": "Stress suffix"}], "l8": [{"q": "shadowing 最接近：", "opts": ["聽到後即時跟讀模仿", "默寫", "翻譯", "只看字幕"], "ans": 0, "topic": "Shadowing"}, {"q": "第一次 shadowing 建議：", "opts": ["一次修所有問題", "先抓一個目標", "只求速度", "完全不回聽"], "ans": 1, "topic": "Shadowing"}, {"q": "錄音後最重要的一步：", "opts": ["立刻刪除", "A/B 比較 model 與自己", "只看波形", "加快播放"], "ans": 1, "topic": "Recording"}, {"q": "ship—sheep 適合檢查：", "opts": ["母音對立", "句法", "拼字", "時態"], "ans": 0, "topic": "/i/ vs /ɪ/"}, {"q": "right—light 適合檢查：", "opts": ["/ɹ-l/", "/v-w/", "/θ-s/", "/n-ŋ/"], "ans": 0, "topic": "/ɹ/ vs /l/"}, {"q": "Pick it up. 適合練：", "opts": ["linking", "silent-e", "-ed", "鼻音"], "ans": 0, "topic": "Linking"}, {"q": "I want to go. 可觀察：", "opts": ["function-word reduction", "只有清音", "沒有 stress", "完全逐字"], "ans": 0, "topic": "Reduction"}, {"q": "有效回聽應優先問：", "opts": ["我有沒有接近本次目標？", "像不像某位明星？", "是不是完全沒口音？", "音量夠不夠大？"], "ans": 0, "topic": "Self-monitoring"}, {"q": "如果一次修太多項目通常會：", "opts": ["降低認知負荷", "增加負荷", "自動更自然", "保證正確"], "ans": 1, "topic": "Practice method"}, {"q": "較有效的循環是：", "opts": ["聽→模仿→錄音→回聽→修正", "讀→翻譯→背", "看→跳過→重來", "只錄不聽"], "ans": 0, "topic": "Practice method"}], "l9": [{"q": "Speech Recognition Lab 主要提供：", "opts": ["系統聽成什麼的回饋", "臨床診斷", "母語者認證", "精確舌位測量"], "ans": 0, "topic": "ASR concept"}, {"q": "ASR 把 ship 聽成 sheep，最值得檢查：", "opts": ["/ɪ/ vs /i/", "/p/ vs /b/", "/ʃ/ vs /s/", "stress only"], "ans": 0, "topic": "/i/ vs /ɪ/"}, {"q": "ASR 把 right 聽成 light，最值得檢查：", "opts": ["/ɹ/ vs /l/", "/v/ vs /w/", "/θ/ vs /s/", "/n/ vs /ŋ/"], "ans": 0, "topic": "/ɹ/ vs /l/"}, {"q": "ASR feedback 是否等於專業口音分數？", "opts": ["是", "否"], "ans": 1, "topic": "ASR concept"}, {"q": "Recognition 成功代表至少：", "opts": ["系統辨識與目標一致", "完全母語口音", "所有音素都完美", "真人一定都聽懂"], "ans": 0, "topic": "ASR concept"}, {"q": "Recognition 失敗時較好的做法：", "opts": ["直接判定自己發音很差", "重聽 model 並針對 contrast 修正", "放棄該字", "只提高音量"], "ans": 1, "topic": "ASR method"}, {"q": "water 適合觀察的美式特徵：", "opts": ["Flap T", "/θ/", "/ŋ/", "silent-e"], "ans": 0, "topic": "Flap T"}, {"q": "city 中間的 t 在美式口語常可能：", "opts": ["flap", "變 /θ/", "完全固定 [tʰ]", "變 /ŋ/"], "ans": 0, "topic": "Flap T"}, {"q": "ASR 特別適合 minimal pairs 因為：", "opts": ["可看系統是否辨成另一詞", "它會顯示舌頭位置", "它保證真人判斷", "它會自動教文法"], "ans": 0, "topic": "ASR method"}, {"q": "最合理的使用方式是：", "opts": ["把 ASR 當一種回饋來源", "把 ASR 當唯一老師", "只看 confidence", "追求 100% 才能前進"], "ans": 0, "topic": "ASR method"}], "l10": [{"q": "sheep/ship 的核心對立：", "opts": ["/i/ vs /ɪ/", "/ɛ/ vs /æ/", "/u/ vs /ʊ/", "/ɹ/ vs /l/"], "ans": 0, "topic": "/i/ vs /ɪ/"}, {"q": "bed/bad 的核心對立：", "opts": ["/i/ vs /ɪ/", "/ɛ/ vs /æ/", "/u/ vs /ʊ/", "/ɑ/ vs /ɔ/"], "ans": 1, "topic": "/ɛ/ vs /æ/"}, {"q": "right/light：", "opts": ["/ɹ/ vs /l/", "/v/ vs /w/", "/θ/ vs /s/", "/n/ vs /ŋ/"], "ans": 0, "topic": "/ɹ/ vs /l/"}, {"q": "think/sink：", "opts": ["/ð/ vs /d/", "/θ/ vs /s/", "/f/ vs /v/", "/tʃ/ vs /dʒ/"], "ans": 1, "topic": "/θ/ vs /s/"}, {"q": "about 常見弱化母音：", "opts": ["/æ/", "/ə/", "/eɪ/", "/ɪ/"], "ans": 1, "topic": "Schwa"}, {"q": "water 常見美式 allophone：", "opts": ["[ɾ]", "[ʃ]", "[θ]", "[ŋ]"], "ans": 0, "topic": "Flap T"}, {"q": "nation 結尾：", "opts": ["/ʃən/", "/tɪon/", "/ʒən/", "/eɪt/"], "ans": 0, "topic": "-tion"}, {"q": "worked 的 -ed：", "opts": ["/t/", "/d/", "/ɪd/", "不發音"], "ans": 0, "topic": "-ed /t/"}, {"q": "wanted 的 -ed：", "opts": ["/t/", "/d/", "/ɪd/", "/ə/"], "ans": 2, "topic": "-ed /ɪd/"}, {"q": "陌生字最成熟的解碼流程較接近：", "opts": ["逐字母→中文", "syllable→stress→chunks→sound→核對 IPA", "直接背整字", "只看第一個母音"], "ans": 1, "topic": "Decoding strategy"}]};
+if(!state.unitQuiz) state.unitQuiz={};
+
+function exampleSpeakText(raw){
+  return raw.replace(/\/[^/]+\//g,'').replace(/\[[^\]]+\]/g,'').replace(/[—–]/g,' ').replace(/\s*\/\s*/g,' ');
+}
+function renderReinforcements(){
+  document.querySelectorAll('.reinforcement[data-reinforcement]').forEach(host=>{
+    const lid=host.dataset.reinforcement, sets=lessonExampleSets[lid]||[], qs=unitQuizData[lid]||[];
+    let out='<h3>經典例子練習</h3><p class="small">每個學習重點至少 5 個典型例子；點例子可播放美式語音。</p>';
+    out+=sets.map(s=>`<div class="example-set"><h4>${s.title}</h4>${s.note?`<div class="small">${s.note}</div>`:''}<div class="example-list">${s.items.map(x=>`<button class="example-btn" data-example="${x.replaceAll('"','&quot;')}">${x}</button>`).join('')}</div></div>`).join('');
+    out+=`<div class="unit-quiz"><h3>單元結束測驗 · 10 題</h3><div class="quiz-progress" id="${lid}QuizProgress">尚未作答</div><div id="${lid}QuizQuestions"></div><div id="${lid}QuizSummary"></div><button class="secondary unitRetake" data-unit="${lid}" style="margin-top:10px">重新測驗</button></div>`;
+    host.innerHTML=out;
+  });
+  document.querySelectorAll('.example-btn').forEach(b=>b.onclick=()=>speak(exampleSpeakText(b.dataset.example)));
+  Object.keys(unitQuizData).forEach(renderUnitQuiz);
+  document.querySelectorAll('.unitRetake').forEach(b=>b.onclick=()=>{delete state.unitQuiz[b.dataset.unit];saveState();renderUnitQuiz(b.dataset.unit);});
+}
+function renderUnitQuiz(lid){
+  const box=document.getElementById(lid+'QuizQuestions'); if(!box)return;
+  const qs=unitQuizData[lid]||[];
+  const saved=state.unitQuiz[lid]||{answers:{},score:0,finished:false};
+  box.innerHTML=qs.map((x,i)=>{
+    const answered=Object.prototype.hasOwnProperty.call(saved.answers,i), chosen=saved.answers[i], correct=chosen===x.ans;
+    return `<div class="unit-q" data-unit="${lid}" data-qi="${i}"><strong>${i+1}. ${x.q}</strong>${x.opts.map((o,j)=>`<button class="choice unitChoice${answered?' answered':''}" data-v="${j}" ${answered?'disabled':''}>${String.fromCharCode(65+j)}. ${o}</button>`).join('')}<div class="feedback ${answered?(correct?'ok':'bad'):''}">${answered?(correct?'✓ 正確':`✗ 正解：${String.fromCharCode(65+x.ans)}. ${x.opts[x.ans]}`):''}</div></div>`;
+  }).join('');
+  box.querySelectorAll('.unitChoice:not([disabled])').forEach(btn=>btn.onclick=()=>answerUnitQuiz(lid,Number(btn.closest('.unit-q').dataset.qi),Number(btn.dataset.v)));
+  updateUnitQuizSummary(lid);
+}
+function answerUnitQuiz(lid,qi,choice){
+  const data=unitQuizData[lid][qi], rec=state.unitQuiz[lid]||{answers:{},score:0,finished:false};
+  if(Object.prototype.hasOwnProperty.call(rec.answers,qi))return;
+  rec.answers[qi]=choice;
+  if(choice===data.ans){rec.score++;reduceWeak(data.topic)}else addWeak(data.topic);
+  rec.finished=Object.keys(rec.answers).length===10;
+  state.unitQuiz[lid]=rec;
+  saveState(); renderUnitQuiz(lid);
+}
+function updateUnitQuizSummary(lid){
+  const rec=state.unitQuiz[lid]||{answers:{},score:0,finished:false};
+  const n=Object.keys(rec.answers).length, progress=document.getElementById(lid+'QuizProgress'), sum=document.getElementById(lid+'QuizSummary');
+  if(progress)progress.textContent=`已作答 ${n} / 10`;
+  if(sum){
+    if(rec.finished){
+      const score=rec.score;
+      let msg=score>=9?'非常穩定，可以進下一單元。':score>=8?'達標；建議快速複習答錯主題。':score>=6?'基礎已建立，但建議重做本單元弱項。':'建議重新看本單元例子後再測一次。';
+      sum.innerHTML=`<div class="quiz-summary"><strong>本單元成績：${score} / 10</strong><br>${msg}</div>`;
+    } else sum.innerHTML='';
+  }
+}
+
+// ---------- Init ----------
+renderAlphabet();
+document.getElementById('playAlphabetAll').onclick=()=>speak('A B C D E F G H I J K L M N O P Q R S T U V W X Y Z',{rate:.72});
+document.getElementById('playAlphabetSlow').onclick=()=>speak('A B C D E F G H I J K L M N O P Q R S T U V W X Y Z',{rate:.55});
+renderIpaReference('all');
+document.querySelectorAll('.ipaRefFilter').forEach(b=>b.onclick=()=>renderIpaReference(b.dataset.type));
+document.getElementById('preQuizRetake').onclick=()=>{state.preQuiz={answers:{},score:0,finished:false};saveState();renderPreQuiz();};
+document.getElementById('preToLesson1').onclick=()=>{if(!state.preQuiz?.finished){alert('建議先完成 Start Here 的 10 題自我檢查。');return;}showView('l1');};
+renderPreQuiz();
+renderReinforcements();
+showView((state.visits?.pre0||0)>0?'dashboard':'pre0');
+</script>
+</body>
+</html>
